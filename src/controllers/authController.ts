@@ -27,7 +27,7 @@ export const register = async (req: Request, res: Response): Promise<void> => {
     } catch (error: any) {
         console.log(error);
 
-        if (error?.code === 'P2002') {
+        if (error?.code === 'P2002' && error?.meta?.target?.includes('email')) {
             res.status(400).json({ error: 'Email already exists' });
         }
         else {
