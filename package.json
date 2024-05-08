@@ -4,7 +4,7 @@
   "description": "",
   "main": "src/app.js",
   "scripts": {
-    "dev":"tsnd --respawn --clear src/server.ts",
+    "dev": "tsnd --respawn --clear src/server.ts",
     "build": "rimraf ./dist && tsc",
     "start": "node dist/server.js"
   },
@@ -14,7 +14,9 @@
     "@types/bcrypt": "^5.0.2",
     "@types/express": "^4.17.21",
     "@types/jsonwebtoken": "^9.0.6",
+    "@types/morgan": "^1.9.9",
     "@types/node": "^20.12.8",
+    "morgan": "^1.10.0",
     "prisma": "^5.13.0",
     "rimraf": "^5.0.5",
     "ts-node-dev": "^2.0.0"
@@ -25,6 +27,7 @@
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
     "jsonwebtoken": "^9.0.2",
-    "typescript": "^5.4.5"
+    "typescript": "^5.4.5",
+    "zod": "^3.23.7"
   }
 }

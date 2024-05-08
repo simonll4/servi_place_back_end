@@ -1,16 +1,28 @@
 import dotenv from 'dotenv';
 import express from 'express';
+import morgan from 'morgan';
 
-import authRoute from './router/authRoute'
-import userRoute from './router/userRoute';
+import specialistRoutes from './router/specialist.routes'
+import customerRoutes from './router/customer.routes'
+import errorHandler from './middlewares/errorHandler'
+
 
 dotenv.config();
 const app = express();
+
+app.use(morgan('dev'));
 app.use(express.json());
 
-//routes
-app.use('/auth', authRoute);
-app.use('/users', userRoute);
+// ver que onda esto
+// app.use(cors({
+//     origin: '*'
+// }));
 
+//routes for specialist
+app.use('/specialist', specialistRoutes);
+//routes for customer
+app.use('/customer', customerRoutes);
+
+app.use(errorHandler);
 
 export default app;
