@@ -4,7 +4,9 @@ import morgan from 'morgan';
 
 import specialistRoutes from './router/specialist.routes'
 import customerRoutes from './router/customer.routes'
-import errorHandler from './middlewares/errorHandler'
+import authRoute from './router/auth.routes'
+import errorHandler from './middlewares/error.handler'
+import { authenticateToken } from './middlewares/auth.jwt';
 
 
 dotenv.config();
@@ -18,10 +20,13 @@ app.use(express.json());
 //     origin: '*'
 // }));
 
+//routes for auth
+app.use('/auth', authRoute);
 //routes for specialist
-app.use('/specialist', specialistRoutes);
+app.use('/specialist',authenticateToken, specialistRoutes);
 //routes for customer
-app.use('/customer', customerRoutes);
+app.use('/customer',authenticateToken, customerRoutes);
+
 
 app.use(errorHandler);
 

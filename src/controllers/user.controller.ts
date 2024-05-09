@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { hashPassword } from '../services/passwordService';
+import { hashPassword } from '../services/password.service';
 import prisma from '../data_base/models/user'
 
 
@@ -48,7 +48,9 @@ export const getAllUsers = async (req: Request, res: Response): Promise<void> =>
 
 export const getUserByID = async (req: Request, res: Response): Promise<void> => {
 
-    const userId = parseInt(req.params.id);
+    // const userId = parseInt(req.params.id);
+    const userId = parseInt(req.body.id);
+    console.log("asdsadasd"+userId);
     try {
 
         const user = await prisma.findUnique({ where: { id: userId } });

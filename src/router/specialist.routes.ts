@@ -1,13 +1,11 @@
 import { Router } from "express";
 
-import authRoute from './auth.routes'
-import userRoute from './user.route'
+import userRoute from './specialist/user.route'
 
 
 const router = Router();
 
 // routes for specialist
-router.use('/auth', authRoute);
 router.use('/user', userRoute);
 
 
