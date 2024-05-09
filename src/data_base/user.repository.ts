@@ -2,9 +2,8 @@
 import { type user } from "@prisma/client";
 import prisma from './models/user';
 
-import { generateToken } from '../services/auth.service';
-import { comparePassword, hashPassword } from '../services/password.service';
-import { nextTick } from "process";
+import { hashPassword } from '../services/password.service';
+
 
 
 type CreateUserType = Pick<user, "email" | "password">;

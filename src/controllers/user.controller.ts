@@ -20,15 +20,15 @@ export const createUser = async (req: Request, res: Response): Promise<void> => 
         });
         res.status(201).json(user);
 
-    } catch (error: any) {
+    } catch (error: unknown) {
+        const err = error as { code?: string, meta?: { target?: string } };
 
-        if (error?.code === 'P2002' && error?.meta?.target?.includes('email')) {
+        if (err?.code === 'P2002' && err?.meta?.target?.includes('email')) {
             res.status(400).json({ error: 'Email already exists' });
         }
         else {
             res.status(500).json({ error: 'Something went wrong' });
         }
-
     }
 
 };
@@ -39,7 +39,7 @@ export const getAllUsers = async (req: Request, res: Response): Promise<void> =>
         const users = await prisma.findMany();
         res.status(200).json(users);
 
-    } catch (error: any) {
+    } catch (error: unknown) {
 
         res.status(500).json({ error: 'Something went wrong' });
 
@@ -61,7 +61,7 @@ export const getUserByID = async (req: Request, res: Response): Promise<void> =>
         }
         res.status(200).json(user);
 
-    } catch (error: any) {
+    } catch (error: unknown) {
 
         res.status(500).json({ error: 'Something went wrong' });
 
@@ -73,22 +73,22 @@ export const updateUser = async (req: Request, res: Response): Promise<void> => 
     const { password } = req.body;
     try {
 
-        let dataToUpdate: any = { ...req.body };
+        const dataToUpdate: { password?: string } = { ...req.body };
         if (password) {
             dataToUpdate.password = await hashPassword(password);
         }
         const user = await prisma.update({ where: { id: userId }, data: dataToUpdate });
         res.status(200).json(user);
 
-    } catch (error: any) {
+    } catch (error: unknown) {
+        const err = error as { code?: string };
 
-        if (error?.code === 'P2025') {
+        if (err?.code === 'P2025') {
             res.status(404).json({ error: 'User not found' });
         }
         else {
             res.status(500).json({ error: 'Something went wrong' });
         }
-
     }
 }
 
@@ -99,9 +99,10 @@ export const deleteUser = async (req: Request, res: Response): Promise<void> => 
         await prisma.delete({ where: { id: userId } });
         res.status(204).json({ message: `User ${userId} deleted` }).end();
 
-    } catch (error: any) {
+    } catch (error: unknown) {
+        const err = error as { code?: string };
 
-        if (error?.code === 'P2025') {
+        if (err?.code === 'P2025') {
             res.status(404).json({ error: 'User not found' });
         }
         else {

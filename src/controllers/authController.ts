@@ -3,14 +3,14 @@ import { createUser, findUser } from '../data_base/user.repository';
 
 import { generateToken } from '../services/auth.service';
 
-import { zParse, authRegisterSchema, authLoginSchema } from "../middlewares/validation.schemas";
+import { zParse, authRegisterSchema} from "../middlewares/validation.schemas";
 import { comparePassword } from '../services/password.service';
 
 
 export const register = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
 
     try {
-        const { email, password } = req.body;
+        //const { email, password } = req.body;
 
         // if (!email || !password) {
         //     res.status(400).json({ error: 'Email and password are required' });
@@ -18,8 +18,8 @@ export const register = async (req: Request, res: Response, next: NextFunction):
         // }
 
         const { body } = await zParse(authRegisterSchema, req);
-        const user = await createUser({ email, password });
-        
+        const user = await createUser({ email: body.email, password: body.password });
+
         const token = generateToken(user);
         res.status(201).json({ token });
 
@@ -34,7 +34,7 @@ export const register = async (req: Request, res: Response, next: NextFunction):
     }
 };
 
-export const login = async (req: Request, res: Response,next: NextFunction): Promise<void> => {
+export const login = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
 
         const { email, password } = req.body;
@@ -45,7 +45,7 @@ export const login = async (req: Request, res: Response,next: NextFunction): Pro
         // }
 
         const user = await findUser({ email });
-       
+
         if (!user) {
             throw new Error('Invalid credentials');
             // res.status(400).json({ error: 'Invalid credentials' });
