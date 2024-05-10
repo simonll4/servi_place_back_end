@@ -4,7 +4,7 @@ import morgan from 'morgan';
 
 import specialistRoutes from './router/specialist.routes'
 import customerRoutes from './router/customer.routes'
-import authRoute from './router/auth.routes'
+import authRoute from './router/authentication/auth.routes'
 import errorHandler from './middlewares/error.handler'
 import { authenticateToken } from './middlewares/auth.jwt';
 

@@ -5,7 +5,6 @@ import prisma from './models/user';
 import { hashPassword } from '../services/password.service';
 
 
-
 type CreateUserType = Pick<user, "email" | "password">;
 type FindUserType = Pick<user, "id"> | Pick<user, "email">;
 
