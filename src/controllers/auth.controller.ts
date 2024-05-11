@@ -3,7 +3,7 @@ import { createUser, findUser } from '../data_base/user.repository';
 
 import { generateToken } from '../services/auth.service';
 
-import { zParse, authRegisterSchema} from "../middlewares/validation.schemas";
+import { zParse, authRegisterSchema } from "../middlewares/validation.schemas";
 import { comparePassword } from '../services/password.service';
 
 

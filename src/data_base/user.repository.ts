@@ -12,12 +12,20 @@ export const createUser = async (user: CreateUserType) => {
 
     const hashedPassword = await hashPassword(user.password);
 
-    return await prisma.create({
-        data: {
-            email: user.email,
-            password: hashedPassword,
-        }
-    });
+    try {
+        return await prisma.create({
+            data: {
+                email: user.email,
+                password: hashedPassword,
+            }
+        });
+    } catch (error) {
+        console.log(error);
+        throw error;
+    }
+
+
+
 };
 
 export const findUser = async (user: FindUserType) => {
