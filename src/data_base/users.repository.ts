@@ -1,12 +1,11 @@
 
-import { type user } from "@prisma/client";
-import prisma from './models/user';
+import { type Users } from "@prisma/client";
+import prisma from './models/users';
 
 import { hashPassword } from '../services/password.service';
 
-
-type CreateUserType = Pick<user, "email" | "password">;
-type FindUserType = Pick<user, "id"> | Pick<user, "email">;
+type CreateUserType = Pick<Users, "email" | "password" | "role" | "name" | "last_name" | "profile_picture">;
+type FindUserType = Pick<Users, "id"> | Pick<Users, "email">;
 
 export const createUser = async (user: CreateUserType) => {
 
@@ -17,13 +16,16 @@ export const createUser = async (user: CreateUserType) => {
             data: {
                 email: user.email,
                 password: hashedPassword,
+                role: user.role,
+                name: user.name,
+                last_name: user.last_name,
+                profile_picture: user.profile_picture
             }
         });
     } catch (error) {
         console.log(error);
         throw error;
     }
-
 
 
 };
