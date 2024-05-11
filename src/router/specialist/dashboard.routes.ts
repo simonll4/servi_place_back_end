@@ -7,4 +7,10 @@ const router = express.Router();
 //
 //
 
+router.post('/', (req, res) => {
+  res.send('Dashboard del especialista');
+});
+
+
+
 export default router;

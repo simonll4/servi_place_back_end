@@ -13,8 +13,80 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model user {
-  id       Int     @id @default(autoincrement())
-  email    String  @unique
-  password String
+model Users {
+  id              Int            @id @default(autoincrement())
+  email           String         @unique
+  password        String
+  name            String
+  last_name       String
+  role            String
+  profile_picture String
+  categories  UserCategory[]
+  artciles        Articles[]
+  chatsInitiated  Chats[]        @relation("ChatsInitiated")
+  chatsReceived   Chats[]        @relation("ChatsReceived")
+  jobs1           Jobs[]         @relation("Jobs1")
+  jobs2           Jobs[]         @relation("Jobs2")
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+  Messages        Messages[]
+}
+
+model Categories {
+  id             Int            @id @default(autoincrement())
+  name           String
+  userCategories UserCategory[]
+  articles       Articles[]
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+}
+
+model UserCategory {
+  userId     Int
+  categoryId Int
+  user       Users      @relation(fields: [userId], references: [id])
+  category   Categories @relation(fields: [categoryId], references: [id])
+
+  @@id([userId, categoryId])
+}
+
+model Articles {
+  id         Int        @id @default(autoincrement())
+  title      String
+  paragraph  String
+  image      String
+  authorId   Int
+  categoryId Int
+  author     Users      @relation(fields: [authorId], references: [id])
+  category   Categories @relation(fields: [categoryId], references: [id])
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+}
+
+model Chats {
+  id           Int        @id @default(autoincrement())
+  idUser1      Int
+  idUser2      Int
+  userSender   Users      @relation(fields: [idUser1], references: [id], name: "ChatsInitiated")
+  userReceiver Users      @relation(fields: [idUser2], references: [id], name: "ChatsReceived")
+  messages     Messages[]
+}
+
+model Messages {
+  id        Int      @id @default(autoincrement())
+  content   String
+  chatId    Int
+  authorId  Int
+  chat      Chats    @relation(fields: [chatId], references: [id])
+  author    Users    @relation(fields: [authorId], references: [id])
+  createdAt DateTime @default(now())
+}
+
+model Jobs {
+  id           Int    @id @default(autoincrement())
+  state        String
+  idCustomer   Int
+  idSpecialist Int
+  user1        Users  @relation(fields: [idCustomer], references: [id], name: "Jobs1")
+  user2        Users  @relation(fields: [idSpecialist], references: [id], name: "Jobs2")
 }

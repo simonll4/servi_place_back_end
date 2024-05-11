@@ -1,8 +1,8 @@
 // import { User } from '../data_base/interfaces/userInterface';
-import type { user } from "@prisma/client";
+import type { Users } from "@prisma/client";
 import jwt from 'jsonwebtoken';
 
-type UserType = Pick<user, "id" | "email" | "password">;
+type UserType = Pick<Users, "id" | "email" | "password">;
 const JWT_SECRET = process.env.JWT_SECRET || 'secret';
 
 export const generateToken = (user: UserType): string => {

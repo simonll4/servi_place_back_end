@@ -23,10 +23,14 @@ app.use(express.json());
 //routes for auth
 app.use('/auth', authRoute);
 //routes for specialist
-app.use('/specialist',authenticateToken, specialistRoutes);
+app.use('/specialist', authenticateToken, specialistRoutes);
 //routes for customer
-app.use('/customer',authenticateToken, customerRoutes);
+app.use('/customer', authenticateToken, customerRoutes);
 
+
+app.use((err, res) => {
+  res.status(500).json({ error: err });
+});
 
 app.use(errorHandler);
 
