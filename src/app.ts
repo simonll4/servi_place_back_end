@@ -8,7 +8,7 @@ import morgan from 'morgan';
 import cors from 'cors';
 
 import router from './router/index'
-import { handleConnection } from './sockets';
+import { sockerServer } from './sockets';
 import errorHandler from './middlewares/error.handler';
 
 
@@ -30,11 +30,11 @@ app.use(morgan('dev'));
 app.use(cors({ origin: '*' }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
 //http server routes 
 app.use(router)
-
-//socket server 
-handleConnection(io);
+//socket events
+sockerServer(io);
 
 app.use((err, res) => {
   res.status(500).json({ error: err });

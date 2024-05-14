@@ -6,6 +6,7 @@ type createChat = Pick<Chats, "idUser1" | "idUser2">;
 
 export const createChat = async (chat: createChat) => {
 
+  
   return await prisma.create({
     data: {
       idUser1: chat.idUser1,

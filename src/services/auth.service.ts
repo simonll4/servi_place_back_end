@@ -6,7 +6,7 @@ type UserType = Pick<Users, "id" | "email" | "password">;
 const JWT_SECRET = process.env.JWT_SECRET || 'secret';
 
 export const generateToken = (user: UserType): string => {
-    return jwt.sign({ id: user.id, email: user.email }, JWT_SECRET, { expiresIn: '1h' });
+    return jwt.sign({ id: user.id, email: user.email }, JWT_SECRET, { expiresIn: '24h' });
 }
 
 

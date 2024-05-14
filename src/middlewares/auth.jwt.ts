@@ -21,7 +21,7 @@ export const authenticateToken = (req: Request, res: Response, next: NextFunctio
 };
 
 
-export const authenticateTokenSocket = (token: string) => {
+export const authenticateTokenSocket = async (token: string): Promise<number> => {
     return new Promise((resolve, reject) => {
         Jwt.verify(token, JWT_SECRET, (err, decoded) => {
             if (err) {
@@ -31,9 +31,32 @@ export const authenticateTokenSocket = (token: string) => {
                     reject('Token is not valid');
                 }
             } else {
-                resolve(decoded);
+                if (typeof decoded === 'object' && 'id' in decoded) {
+                    resolve(decoded.id);
+                } else {
+                    reject('Token does not contain an id');
+                }
             }
         });
     });
 };
+
+
+// export const authenticateTokenSocket = (token: string) => {
+//     return new Promise((resolve, reject) => {
+//         Jwt.verify(token, JWT_SECRET, (err, decoded) => {
+//             if (err) {
+//                 if (err.name === 'TokenExpiredError') {
+//                     reject('Token has expired');
+//                 } else {
+//                     reject('Token is not valid');
+//                 }
+//             } else {
+//                 resolve(decoded);
+//             }
+//         });
+//     });
+// };
+
+
 
