@@ -22,6 +22,7 @@ export const register = async (
       return next({status: 400, message: "Email Already Exists"})
     }
 
+    const pathCloudinary = "user/"
     const user = await createUser({
       email: body.email,
       password: body.password,
@@ -29,12 +30,12 @@ export const register = async (
       name: body.name,
       last_name: body.lastName,
       profile_picture: body.profilePhoto
-        ? await cloudinaryUpload(body.profilePhoto, body.email).then(
+        ? await cloudinaryUpload(body.profilePhoto, body.email, pathCloudinary).then(
             (image) => {
               return image.secure_url;
             }
           )
-        : "",
+        : "", 
     }); //Si hay algo en profile.photo, lo sube a cloudinary y dsp guarda en la bd la url que devuelve cloudinary, si no guarda " ". 
     //ver si guardar el id o la url de la imagen, la url viene con HTTPS o HTTP
 

@@ -9,9 +9,9 @@ export const createArticle = async (article: CreateArticleType) => {
         data: {
             title: article.title,
             paragraph: article.paragraph,
-            image: article.image,
             categoryId: article.categoryId,
-            authorId: article.authorId
+            authorId: article.authorId,
+            image: article.image
         }
     })
 }
