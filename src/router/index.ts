@@ -2,7 +2,6 @@ import { Router } from "express";
 import authRoute from './authentication/auth.routes';
 import specialistRoutes from './specialist.routes';
 import customerRoutes from './customer.routes';
-import articleRoutes from './articles/articles.routes';
 
 import { authenticateToken } from "../middlewares/auth.jwt";
 
@@ -15,6 +14,6 @@ router.use('/specialist', authenticateToken, specialistRoutes);
 //routes for customer
 router.use('/customer', authenticateToken, customerRoutes);
 
-router.use('/articles', articleRoutes)
+
 
 export default router;

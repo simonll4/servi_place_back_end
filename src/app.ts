@@ -27,9 +27,6 @@ app.use(express.json());
 app.use(router)
 
 
-app.use((err, res) => {
-  res.status(500).json({ error: err });
-});
 
 app.use(errorHandler);
 

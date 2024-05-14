@@ -9,7 +9,11 @@ const password_schema = z.string().min(8, { "message": "Password must be at leas
 const role_schema = z.enum([Role.CUSTOMER, Role.ESPECIALIST]);
 const names_schema = z.string().min(4, { "message": "Name must be at least 4 characters long" });
 const last_name_schema = z.string().min(4, { "message": "Last name must be at least 4 characters long" });
-const profile_picture_schema = z.string().url({ "message": "Invalid url format" }).optional() || z.string().base64({ "message": "Invalid Base 64" }).optional() || z.string({ "message": "Invalid" }).optional();
+const profile_picture_schema = z.string().url({ "message": "Invalid url format" }).optional() 
+                || z.string().base64({ "message": "Invalid Base 64" }).optional() 
+                || z.string({ "message": "Invalid" }).optional();
+//meti todos dsp habria q ver con cual nos quedamos
+
 const category_schema = z.array(z.string()).optional()
 
 const  authRegisterBody = z.object({

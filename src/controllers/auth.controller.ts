@@ -3,7 +3,7 @@ import { createUser, findUser } from "../data_base/users.repository";
 
 import { generateToken } from "../services/auth.service";
 
-import { zParse, authRegisterSchema } from "../middlewares/validation.schemas";
+import { zParse, authRegisterSchema, authLoginSchema } from "../middlewares/validation.schemas";
 import { comparePassword } from "../services/password.service";
 import { cloudinaryUpload } from "../services/image.storage";
 
@@ -39,49 +39,30 @@ export const register = async (req: Request, res: Response, next: NextFunction):
     
 
     const token = generateToken(user);
-    res.status(201).json({ token });
+    res.status(201).json({ token: "bearer " + token });
 
   } catch (error) {
     next(error);
-    // if (error?.code === 'P2002' && error?.meta?.target?.includes('email')) {
-    //     res.status(400).json({ error: 'Email already exists' });
-    // }
-    // else {
-    //     res.status(500).json({ error: 'Something went wrong' });
-    // }
   }
 };
 
 export const login = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
-    console.log(req.body);
-    const { email, password } = req.body;
 
-    // if (!email || !password) {
-    //     res.status(400).json({ error: 'Email and password are required' });
-    //     return;
-    // }
+    const { body } = await zParse(authLoginSchema, req);
+    const { email, password } = body;
 
-    const user = await findUser({ email });
+    const user = (await findUser({ email }));
 
-    if (!user) {
+    if (!user || (!await comparePassword(password, user?.password || ""))) {
       throw new Error("Invalid credentials");
-      // res.status(400).json({ error: 'Invalid credentials' });
-      // return;
-    }
-
-    const passwordMatch = await comparePassword(password, user.password);
-
-    if (!passwordMatch) {
-      throw new Error("Invalid credentials");
-      // res.status(401).json({ error: 'Invalid credentials' });
-      // return;
     }
 
     const token = generateToken(user);
-    res.status(200).json({ token });
+    res.status(200).json({ token: "Bearer " + token });
 
   } catch (error) {
+    
     next(error);
   }
 };
