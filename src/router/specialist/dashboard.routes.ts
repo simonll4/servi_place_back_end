@@ -2,6 +2,9 @@ import express from 'express';
 
 const router = express.Router();
 
+
+
+
 //TODO aca irian todas las rutas del dashboard del especialista
 // los GET, POST... etc
 //
@@ -9,6 +12,7 @@ const router = express.Router();
 
 router.post('/', (req, res) => {
   res.send('Dashboard del especialista');
+
 });
 
 

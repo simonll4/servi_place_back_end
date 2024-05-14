@@ -6,7 +6,7 @@ type createChat = Pick<Chats, "idUser1" | "idUser2">;
 
 export const createChat = async (chat: createChat) => {
 
-  
+
   return await prisma.create({
     data: {
       idUser1: chat.idUser1,
@@ -65,5 +65,10 @@ export const getChatMessages = async (chatId: number) => {
     where: { id: chatId },
     include: { messages: true }
   });
-  return chat?.messages;
+
+  if (!chat || !chat.messages || chat.messages.length === 0) {
+    throw new Error('No messages found for this chat');
+  }
+
+  return chat.messages;
 };

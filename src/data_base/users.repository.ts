@@ -8,25 +8,17 @@ type CreateUserType = Pick<Users, "email" | "password" | "role" | "name" | "last
 type FindUserType = Pick<Users, "id"> | Pick<Users, "email">;
 
 export const createUser = async (user: CreateUserType) => {
-
     const hashedPassword = await hashPassword(user.password);
-
-    try {
-        return await prisma.create({
-            data: {
-                email: user.email,
-                password: hashedPassword,
-                role: user.role,
-                name: user.name,
-                last_name: user.last_name,
-                profile_picture: user.profile_picture
-            }
-        });
-    } catch (error) {
-        console.log(error);
-        throw error;
-    }
-
+    return await prisma.create({
+        data: {
+            email: user.email,
+            password: hashedPassword,
+            role: user.role,
+            name: user.name,
+            last_name: user.last_name,
+            profile_picture: user.profile_picture
+        }
+    });
 
 };
 
