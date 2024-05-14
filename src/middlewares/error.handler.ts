@@ -1,8 +1,9 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Prisma } from "@prisma/client";
 import { ErrorRequestHandler } from "express";
 import { ZodError } from 'zod';
 
-const errorHandler: ErrorRequestHandler = async (err, req, res) => {
+const errorHandler: ErrorRequestHandler = async (err, req, res, next) => {
   if (err instanceof ZodError) {
     const errorMessage = err.errors.map(error => error.message).join(',');
     return res.status(400).json({ error: errorMessage })
