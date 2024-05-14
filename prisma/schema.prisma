@@ -48,7 +48,6 @@ model UserCategory {
   categoryId Int
   user       Users      @relation(fields: [userId], references: [id])
   category   Categories @relation(fields: [categoryId], references: [id])
-
   @@id([userId, categoryId])
 }
 

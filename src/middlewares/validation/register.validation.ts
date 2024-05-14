@@ -1,5 +1,4 @@
-import { Request } from "express";
-import { AnyZodObject, z } from "zod";
+import { z } from "zod";
 
 import { Role } from "@prisma/client";
 
@@ -29,16 +28,3 @@ const  authRegisterBody = z.object({
 export const authRegisterSchema = z.object({
     body: authRegisterBody
 });
-
-const authLoginBody = z.object({
-    email: email_schema,
-    password: password_schema
-});
-
-export const authLoginSchema = z.object({
-    body: authLoginBody
-});
-
-export async function zParse<T extends AnyZodObject>(schema: T, req: Request): Promise<z.infer<T>> {
-    return schema.parseAsync(req)
-}
