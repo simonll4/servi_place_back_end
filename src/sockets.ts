@@ -13,12 +13,12 @@ export function sockerServer(io: Server) {
     try {
       const id = await authenticateTokenSocket(String(socket.handshake.query.token));
       console.log(`a user connected ${id}`);
-
+      socket.emit('send sesionId',id);
     } catch (error) {
       socket.emit('socket error', error);
     }
 
-
+    
 
     // authenticateTokenSocket(String(socket.handshake.query.token))
     //   .then((decoded: unknown) => {
