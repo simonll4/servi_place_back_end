@@ -1,9 +1,11 @@
 import express from 'express';
-import  {getArticles}  from "../../controllers/articles.controller"
+import  {getAllArticles, getAllArticlesByUser, getArticle, postArticle}  from "../../controllers/articles.controller"
 
 const router = express.Router();
 
-router.get('/getAll', getArticles);
-
+router.get('/getAll', getAllArticles);
+router.post('/create', postArticle);
+router.get('/getArticle', getArticle);
+router.get('/getAllByUser', getAllArticlesByUser);
 
 export default router;

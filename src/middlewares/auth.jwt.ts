@@ -1,23 +1,22 @@
-import { NextFunction, Request, Response } from 'express';
-import Jwt from 'jsonwebtoken';
+import { NextFunction, Request, Response } from 'express'
+import Jwt from 'jsonwebtoken'
 
+const JWT_SECRET = process.env.JWT_SECRET || 'secret'
 
+export const authenticateToken = async (req: Request, res: Response, next: NextFunction) => {
+    const authHeader = await req.headers['authorization']
+    const token = authHeader && (authHeader as string)?.split(' ')[1]
 
-const JWT_SECRET = process.env.JWT_SECRET || 'secret';
-
-export const authenticateToken = (req: Request, res: Response, next: NextFunction) => {
-    const authHeader = req.headers['authorization'];
-    const token = authHeader && authHeader.split(' ')[1];
-
-    if (token == null) return res.status(401).json({ error: 'not authorized' });
+    if (token == null || token === '') return next({ status: 401, message: 'Without token' })
 
     Jwt.verify(token, JWT_SECRET, async (err, decoded) => {
-        if (err?.name === 'TokenExpiredError') return res.status(403).json({ error: 'you do not have access to this resource' });
+        if (err) {
+            if (err.name === 'TokenExpiredError')
+                return next({ status: 403, message: 'you do not have access to this resource' })
+            return next(err) // Pasar cualquier otro error al errorHandler
+        }
         // save the decoded data in the request object (lo agrega como un objeto ej req.body.decoded.id)
-        req.body.decoded = decoded;
-        console.log(req.body);
-        next();
+        req.body = { ...req.body, decoded }
+        next()
     })
-};
-
-
+}
