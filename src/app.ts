@@ -15,6 +15,7 @@ import errorHandler from './middlewares/error.handler';
 dotenv.config();
 const app = express();
 const httpServer = createServer(app);
+
 const io = new Server(httpServer, {
   connectionStateRecovery: { maxDisconnectionDuration: 120000 },
   cors: {
@@ -24,7 +25,6 @@ const io = new Server(httpServer, {
     credentials: true
   }
 });
-
 
 app.use(morgan('dev'));
 app.use(cors({ origin: '*' }));
