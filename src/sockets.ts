@@ -18,8 +18,6 @@ export function sockerServer(io: Server) {
       socket.emit('socket error', error);
     }
 
-    
-
     // authenticateTokenSocket(String(socket.handshake.query.token))
     //   .then((decoded: unknown) => {
     //     const { id } = decoded as { id: number };
@@ -49,7 +47,7 @@ export function sockerServer(io: Server) {
         console.log("id del receptor: ", receiverId);
         console.log(`message de ${id} a ${receiverId} : ` + msg);
 
-        io.emit('set message', createdMsg, id);
+        io.emit('set message', createdMsg);
 
       } catch (error) {
         socket.emit('socket error', error);
@@ -66,7 +64,7 @@ export function sockerServer(io: Server) {
 
         console.log(`chat history with ${id} ${receiverId}`);
         const messages = await chatHistory(id, receiverId);
-        socket.emit('set chat history', messages, id);
+        socket.emit('set chat history', messages, receiverId);
 
       } catch (error) {
         socket.emit('socket error', { message: error });
