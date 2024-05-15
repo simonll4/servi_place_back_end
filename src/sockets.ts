@@ -3,11 +3,7 @@ import { Server, Socket } from 'socket.io';
 
 import { authenticateTokenSocket } from './middlewares/auth.jwt';
 import { chatHistory, chatMessage, getReceiverId } from './controllers/chat.controller';
-import { token } from 'morgan';
-import { error } from 'console';
-import { emit } from 'process';
-import e from 'express';
-import { thisChatExist } from './data_base/chats.repository';
+
 
 export function sockerServer(io: Server) {
 
@@ -17,9 +13,12 @@ export function sockerServer(io: Server) {
     try {
       const id = await authenticateTokenSocket(String(socket.handshake.query.token));
       console.log(`a user connected ${id}`);
+
     } catch (error) {
       socket.emit('socket error', error);
     }
+
+
 
     // authenticateTokenSocket(String(socket.handshake.query.token))
     //   .then((decoded: unknown) => {
@@ -40,14 +39,17 @@ export function sockerServer(io: Server) {
         }
         const id = await authenticateTokenSocket(String(socket.handshake.query.token));
         const receiverId = await getReceiverId(Number(articleIdReceiver));
-        chatMessage(id.toString(), String(receiverId), msg);
+        if (id == receiverId) {
+          throw 'You cannot send a message to yourself';
+        }
+        const createdMsg = await chatMessage(id.toString(), String(receiverId), msg);
 
         //pruebas
         console.log("id del articulo: ", articleIdReceiver);
         console.log("id del receptor: ", receiverId);
         console.log(`message de ${id} a ${receiverId} : ` + msg);
 
-        io.emit('set message', msg);
+        io.emit('set message', createdMsg, id);
 
       } catch (error) {
         socket.emit('socket error', error);
@@ -61,13 +63,13 @@ export function sockerServer(io: Server) {
       try {
         const id = await authenticateTokenSocket(String(socket.handshake.query.token));
         const receiverId = await getReceiverId(Number(articleIdReceiver));
-        
+
         console.log(`chat history with ${id} ${receiverId}`);
         const messages = await chatHistory(id, receiverId);
-        socket.emit('set chat history', messages);
+        socket.emit('set chat history', messages, id);
 
       } catch (error) {
-        socket.emit('socket error', error);
+        socket.emit('socket error', { message: error });
       }
 
     });
