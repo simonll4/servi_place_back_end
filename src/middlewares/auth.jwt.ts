@@ -7,7 +7,7 @@ export const authenticateToken = async (req: Request, res: Response, next: NextF
     const authHeader = await req.headers['authorization']
     const token = authHeader && (authHeader as string)?.split(' ')[1]
 
-    if (token == null || token === "") return next({ status: 401, message: 'Without token' })
+    if (token == null || token === '') return next({ status: 401, message: 'Without token' })
 
     Jwt.verify(token, JWT_SECRET, async (err, decoded) => {
         if (err) {

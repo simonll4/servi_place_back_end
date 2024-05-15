@@ -10,5 +10,5 @@ export const cloudinaryUpload = async(image: string, email: string, folder: stri
     return await cloudinary.uploader.upload(image, {
         public_id: email,
         folder: folder
-    } );
+    });
 }
