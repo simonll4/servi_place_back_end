@@ -8,8 +8,6 @@ generator client {
   provider = "prisma-client-js"
 }
 
-
-
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
@@ -23,7 +21,7 @@ model Users {
   last_name       String
   role            Role
   profile_picture String
-  categories  UserCategory[]
+  categories      UserCategory[]
   articles        Articles[]
   chatsInitiated  Chats[]        @relation("ChatsInitiated")
   chatsReceived   Chats[]        @relation("ChatsReceived")
@@ -48,6 +46,7 @@ model UserCategory {
   categoryId Int
   user       Users      @relation(fields: [userId], references: [id])
   category   Categories @relation(fields: [categoryId], references: [id])
+
   @@id([userId, categoryId])
 }
 
@@ -94,5 +93,5 @@ model Jobs {
 
 enum Role {
   CUSTOMER
-  ESPECIALIST
+  SPECIALIST
 }

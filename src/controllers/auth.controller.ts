@@ -13,10 +13,12 @@ import { generateToken } from '../services/auth.service'
 export const register = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
         const { body } = await zParse(authRegisterSchema, req)
+        console.log(body)
 
         if (await findUser({ email: body.email })) {
             return next({ status: 400, message: 'Email Already Exists' })
         }
+        
 
         const pathCloudinary = 'user/'
         const user = await createUser({
@@ -27,10 +29,11 @@ export const register = async (req: Request, res: Response, next: NextFunction):
             last_name: body.lastName,
             profile_picture: body.profilePhoto
                 ? await cloudinaryUpload(body.profilePhoto, body.email, pathCloudinary).then((image) => {
-                      return image.secure_url
-                  })
+                    return image.secure_url
+                })
                 : ''
-        }) //Si hay algo en profile.photo, lo sube a cloudinary y dsp guarda en la bd la url que devuelve cloudinary, si no guarda " ".
+        })
+        //Si hay algo en profile.photo, lo sube a cloudinary y dsp guarda en la bd la url que devuelve cloudinary, si no guarda " ".
         //ver si guardar el id o la url de la imagen, la url viene con HTTPS o HTTP
 
         const token = generateToken(user)
@@ -50,11 +53,11 @@ export const login = async (req: Request, res: Response, next: NextFunction): Pr
         if (!user || !(await comparePassword(password, user?.password || ''))) {
             return next({ status: 401, message: 'Invalid credentials' })
         }
-
+        
         const token = generateToken(user)
         res.status(200)
             .header('Authorization', 'Bearer ' + token)
-            .json({ message: 'Login success' })
+            .json({ message: 'Login success' });
     } catch (error) {
         next(error)
     }
