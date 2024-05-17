@@ -7,34 +7,24 @@ import { authRegisterSchema } from '../middlewares/validation/register.validatio
 //Services
 import { zParse } from '../services/zod.service'
 import { comparePassword } from '../services/password.service'
-import { cloudinaryUpload } from '../services/cloudinary.service'
 import { generateToken } from '../services/auth.service'
 
 export const register = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
         const { body } = await zParse(authRegisterSchema, req)
-        console.log(body)
 
-        if (await findUser({ email: body.email })) {
-            return next({ status: 400, message: 'Email Already Exists' })
-        }
-        
 
-        const pathCloudinary = 'user/'
+        await findUser({ email: body.email })
+        //res.status(409).json({ message: 'Email Already Exists' });
+
         const user = await createUser({
             email: body.email,
             password: body.password,
             role: body.role,
             name: body.name,
             last_name: body.lastName,
-            profile_picture: body.profilePhoto
-                ? await cloudinaryUpload(body.profilePhoto, body.email, pathCloudinary).then((image) => {
-                    return image.secure_url
-                })
-                : ''
-        })
-        //Si hay algo en profile.photo, lo sube a cloudinary y dsp guarda en la bd la url que devuelve cloudinary, si no guarda " ".
-        //ver si guardar el id o la url de la imagen, la url viene con HTTPS o HTTP
+            profile_picture: body.profilePhoto || ''
+        });
 
         const token = generateToken(user)
         res.status(201).json({ token: 'Bearer ' + token })
@@ -53,7 +43,7 @@ export const login = async (req: Request, res: Response, next: NextFunction): Pr
         if (!user || !(await comparePassword(password, user?.password || ''))) {
             return next({ status: 401, message: 'Invalid credentials' })
         }
-        
+
         const token = generateToken(user)
         res.status(200)
             .header('Authorization', 'Bearer ' + token)

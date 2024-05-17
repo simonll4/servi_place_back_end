@@ -1,7 +1,9 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { NextFunction, Request, Response } from 'express'
 import { createArticle, getArticlesByUser, findArticle } from '../data_base/articles.repository'
-import { cloudinaryUpload } from '../services/cloudinary.service'
 import { findUser } from '../data_base/users.repository'
+import { getCustomerArticlesByCategory, getSpecialistArticlesByCategory } from '../data_base/categories.repository'
+import { set } from 'zod'
 
 //GETs
 //Todos los articulos por usuario.
@@ -38,7 +40,6 @@ export const getArticle = async (req: Request, res: Response, next: NextFunction
 
         res.status(200).json({ article: article })
     } catch (err) {
-        console.log("jejeje")
         next(err)
     }
 }
@@ -51,17 +52,13 @@ export const postArticle = async (req: Request, res: Response, next: NextFunctio
         //Lo mismo para la categoria... si no existe la categoria, no se puede crear el articulo.
         if (!user) return next({ name: 'NotFoundError' })
 
-        const cloudinaryPath = 'articles/'
+
         const article = await createArticle({
             title: req.body.title,
             paragraph: req.body.paragraph,
             categoryId: req.body.categoryId,
             authorId: req.body.decoded.id,
             image: req.body.image
-                ? await cloudinaryUpload(req.body.image, req.body.decoded.email, cloudinaryPath).then((image) => {
-                      return image.secure_url
-                  })
-                : ''
         })
         res.status(201).json({ message: 'Article created', article: article })
     } catch (err) {
@@ -70,15 +67,58 @@ export const postArticle = async (req: Request, res: Response, next: NextFunctio
     }
 }
 
-// model Articles {
-// id         Int        @id @default(autoincrement())
-// title      String
-// paragraph  String
-// image      String
-// authorId   Int
-// categoryId Int
-// author     Users      @relation(fields: [authorId], references: [id])
-// category   Categories @relation(fields: [categoryId], references: [id])
-// createdAt  DateTime   @default(now())
-// updatedAt  DateTime   @updatedAt
-//   }
+
+
+
+// const categories = [1, 2, 3]; // The category IDs you want to search for
+// const url = `http://your-api-url/getArticlesByCategories?categories=${categories.join(',')}`;
+
+// fetch(url)
+//   .then(response => response.json())
+//   .then(data => console.log(data))
+//   .catch(error => console.error('Error:', error));
+
+export const getSpecialistArticlesByCategories = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    const params = req.query;
+
+    if (Object.keys(params).length === 0 || !params.categories) {
+        res.status(400).json({ message: 'Bad request' });
+    }
+
+    try {
+        const categories = String(params.categories).split(',');
+        const articlesPromises = categories.map(async category => {
+            const articles = await getSpecialistArticlesByCategory({ id: Number(category) });
+            return (articles && Object.keys(articles).length > 0) ? articles : null;
+        });
+        const articlesArrays = (await Promise.all(articlesPromises)).filter(article => article !== null);
+
+        // devulve una lista de listas de objetos, cada lista es una categoria y los objetos son los articulos de esa categoria.
+        res.status(200).json({ message: 'Articles by categories', articlesArrays });
+    } catch (error) {
+        next(error);
+    }
+}
+
+export const getCustomerArticlesByCategories = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    const params = req.query;
+
+    if (Object.keys(params).length === 0 || !params.categories) {
+        res.status(400).json({ message: 'Bad request' });
+    }
+
+    try {
+        const categories = String(params.categories).split(',');
+        const articlesPromises = categories.map(async category => {
+            const articles = await getCustomerArticlesByCategory({ id: Number(category) });
+            return (articles && Object.keys(articles).length > 0) ? articles : null;
+        });
+        const articlesArrays = (await Promise.all(articlesPromises)).filter(article => article !== null);
+
+        // devulve una lista de listas de objetos, cada lista es una categoria y los objetos son los articulos de esa categoria.
+        res.status(200).json({ message: 'Articles by categories', articlesArrays });
+    } catch (error) {
+        next(error);
+    }
+}
+

@@ -1,16 +1,11 @@
 import express from 'express';
+import { getCustomerArticlesByCategories } from '../../controllers/articles.controller';
 
 const router = express.Router();
 
-//TODO aca irian todas las rutas del dashboard del especialista
-// los GET, POST... etc
-//
-//
 
-router.post('/', (req, res) => {
-  res.send('Dashboard del especialista');
-});
-
+//actions that the client can perform from their dashboard
+router.get('/articles', getCustomerArticlesByCategories );
 
 
 export default router;

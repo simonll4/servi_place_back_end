@@ -1,12 +1,12 @@
 import { Router } from "express";
 
-import dashboardRoute from './specialist/dashboard.routes'
+import dashboardRoutesSpecialist from './specialist/dashboard.routes'
 
 
 const router = Router();
 
 // routes for specialist
-router.use('/dashboard', dashboardRoute);
+router.use('/dashboard', dashboardRoutesSpecialist);
 
 
 

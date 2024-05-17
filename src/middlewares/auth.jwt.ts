@@ -17,7 +17,6 @@ export const authenticateTokenSpecialist = (req: Request, res: Response, next: N
         // save the decoded data in the request object (lo agrega como un objeto ej req.body.decoded.id)
         req.body.decoded = decoded;
         if (req.body.decoded.role !== Role.SPECIALIST) return res.status(403).json({ error: 'you do not have access to this resource' })
-        console.log(req.body);
         next();
     })
 };
@@ -34,7 +33,6 @@ export const authenticateTokenCustomer = (req: Request, res: Response, next: Nex
         // save the decoded data in the request object (lo agrega como un objeto ej req.body.decoded.id)
         req.body.decoded = decoded;
         if (req.body.decoded.role !== Role.CUSTOMER) return res.status(403).json({ error: 'you do not have access to this resource' })
-        console.log(req.body);
         next();
     })
 };
