@@ -3,13 +3,12 @@ import { Router } from "express";
 import dashboardRoutesCustomer from './customer/dashboard.routes'
 import myProfileRoutesCustomer from './customer/my.profile.routes'
 import profileRoutes from './customer/profile.routes'
-import jobsRoutes from "./jobs/jobs.router";
+import jobsRoutes from "./customer/myjobs.routes";
 
 
 const router = Router();
 
-
-// routes for customer
+// Customer routes for screens
 router.use('/dashboard', dashboardRoutesCustomer);
 router.use('/myProfile', myProfileRoutesCustomer);
 router.use('/profile', profileRoutes)

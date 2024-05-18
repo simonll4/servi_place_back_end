@@ -61,6 +61,7 @@ const errorHandler: ErrorRequestHandler = async (err, req, res, next) => {
   } else if (err.status === 401) {
     return res.status(401).json({ error: 'invalid credentials' });
   }
+  
   if (err.type === 'entity.parse.failed') return res.status(400).json({ error: 'wrong formatted JSON' });
   if (err.message === 'invalid credentials') return res.status(401).json({ error: 'invalid credentials' });
   return res.status(500).json({ error: 'internal server error' });
@@ -68,17 +69,4 @@ const errorHandler: ErrorRequestHandler = async (err, req, res, next) => {
 
 export default errorHandler;
 
-      // if (err.code === 'P2002') {
-      //   const fieldName = err.meta?.target; // Add null check for err.meta
-      //   return res.status(409).json({ error: `${fieldName} already exists` });
-      // }
-      // if (err.code === 'P2025') {
-      //   const modelName = err.meta?.model;
-      //   const fieldName = err.meta?.field_name;
-      //   return res.status(404).json({ error: `${modelName} with ${fieldName} not found` });
-      // }
-      // if (err.code === 'P2003') {
-      //   const modelName = err.meta?.model;
-      //   const relationField = err.meta?.relation_field;
-      //   return res.status(409).json({ error: `Foreign key error on ${modelName} with ${relationField}` });
-      // }
+  

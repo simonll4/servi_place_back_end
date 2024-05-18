@@ -4,8 +4,8 @@ import { getCategorie, createCategorie } from '../../controllers/categories.cont
 
 const router = express.Router();
 
-router.post('/createCategorie', createCategorie )
-router.get('/getCategorie', getCategorie)
+router.post('/createCategory', createCategorie )
+router.get('/getCategory', getCategorie)
 
 
 export default router;

@@ -22,8 +22,6 @@ router.use('/customer', authenticateTokenCustomer, customerRoutes);
 // MODERATOR
 router.use('/categories',categoriesRoutes);
 
-//Mover dsp
-
 
 
 export default router;

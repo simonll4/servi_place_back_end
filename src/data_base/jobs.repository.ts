@@ -3,7 +3,8 @@ import prisma from './models/jobs'
 
 
 type jobCreateType = Pick<Jobs, 'name' | 'description' | 'idCustomer' | 'idSpecialist' >
-
+type idJobsType = { idCustomer?: number, idSpecialist?: number };
+type idCustomerIdSpecialistType = { idCustomer: number,idSpecialist: number}
 
 export const jobCreate = async (job: jobCreateType) => {
     return await prisma.create({
@@ -17,20 +18,23 @@ export const jobCreate = async (job: jobCreateType) => {
     })
 }
 
-export const getJob = async (id: {id: number}) => {
+export const getJob = async (idJob: number) => {
+    console.log(idJob)
     return await prisma.findUnique({
         where: {
-            id: id.id
+            id: idJob
         }
     })
 }
 
-export const jobsByUser = async (id: {idCustomer: number}) => {
+
+export const jobsByUser = async (id: idJobsType) => {
+    const key = 'idCustomer' in id ? 'idCustomer' : 'idSpecialist';
     return await prisma.findMany({
         where: {
-            idCustomer: id.idCustomer
+            [key]: id[key as keyof typeof id]
         }
-    })
+    });
 }
 
 export const stateJob = async (id: {id: number}, state: JobState) => {
@@ -44,6 +48,16 @@ export const stateJob = async (id: {id: number}, state: JobState) => {
     })
 }
 
+
+export const findPendingJob = async (ids: idCustomerIdSpecialistType) => {
+    return await prisma.findFirst({
+        where: {
+            idCustomer: ids.idCustomer,
+            idSpecialist: ids.idSpecialist,
+            state: JobState.PENDING
+        }
+    });
+}
 
 
 // model Jobs {

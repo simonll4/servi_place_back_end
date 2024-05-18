@@ -6,6 +6,8 @@ import { getProfileInformation } from '../../controllers/users.information.contr
 const router = express.Router();
 
 // actions that the client can perform from a third party profile or information that he can see
+
+// get user information
 router.get('/userInformation', getProfileInformation);
 
 export default router;

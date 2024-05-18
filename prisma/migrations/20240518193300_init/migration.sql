@@ -1,4 +1,7 @@
 -- CreateEnum
+CREATE TYPE "JobState" AS ENUM ('PENDING', 'ACCEPTED', 'REJECTED', 'FINISHED');
+
+-- CreateEnum
 CREATE TYPE "Role" AS ENUM ('CUSTOMER', 'SPECIALIST');
 
 -- CreateTable
@@ -72,7 +75,9 @@ CREATE TABLE "Messages" (
 -- CreateTable
 CREATE TABLE "Jobs" (
     "id" SERIAL NOT NULL,
-    "state" TEXT NOT NULL,
+    "name" TEXT NOT NULL,
+    "description" TEXT NOT NULL,
+    "state" "JobState" NOT NULL,
     "idCustomer" INTEGER NOT NULL,
     "idSpecialist" INTEGER NOT NULL,
 
