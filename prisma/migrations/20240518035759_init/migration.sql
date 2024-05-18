@@ -8,6 +8,7 @@ CREATE TABLE "Users" (
     "password" TEXT NOT NULL,
     "name" TEXT NOT NULL,
     "last_name" TEXT NOT NULL,
+    "description" TEXT NOT NULL,
     "role" "Role" NOT NULL,
     "profile_picture" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,

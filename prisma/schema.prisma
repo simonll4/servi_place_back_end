@@ -19,6 +19,7 @@ model Users {
   password        String
   name            String
   last_name       String
+  description     String
   role            Role
   profile_picture String
   categories      UserCategory[]

@@ -21,9 +21,6 @@ export const getArticlesByUser = async (authorId: getArticlesByUserType) => {
     return await prisma.findMany({
         where: {
             authorId: authorId.authorId
-        },
-        include: {
-            author: true
         }
     })
 }

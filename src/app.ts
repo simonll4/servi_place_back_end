@@ -9,10 +9,10 @@ import { setupCors } from './middlewares/setup.cors';
 dotenv.config()
 
 const app = express()
+app.use(morgan('dev'))
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(setupCors)
-app.use(morgan('dev'))
 app.use(router)
 app.use(errorHandler)
 

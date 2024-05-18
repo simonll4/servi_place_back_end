@@ -21,48 +21,27 @@ export const getCategory = async (id: getCategorieType) => {
 }
 
 
-
-export const getSpecialistArticlesByCategory = async (id: getCategorieType) => {
-    const category = await prisma.findUnique({
-      where: {
-        id: id.id
-      },
-      include: {
-        articles: {
-          where: {
-            author: {
-              role: 'SPECIALIST'
-            }
+const getArticlesByCategoryAndRole = async (id: getCategorieType, role: 'SPECIALIST' | 'CUSTOMER') => {
+  const category = await prisma.findUnique({
+    where: {
+      id: id.id
+    },
+    include: {
+      articles: {
+        where: {
+          author: {
+            role: role
           }
         }
       }
-    });
-  
-    if (category) {
-      return category.articles;
     }
-    return null;
-  }
+  });
 
-
-  export const getCustomerArticlesByCategory = async (id: getCategorieType) => {
-    const category = await prisma.findUnique({
-      where: {
-        id: id.id
-      },
-      include: {
-        articles: {
-          where: {
-            author: {
-              role: 'CUSTOMER'
-            }
-          }
-        }
-      }
-    });
-  
-    if (category) {
-      return category.articles;
-    }
-    return null;
+  if (category) {
+    return category.articles;
   }
+  return null;
+}
+
+export const getSpecialistArticlesByCategory = (id: getCategorieType) => getArticlesByCategoryAndRole(id, 'SPECIALIST');
+export const getCustomerArticlesByCategory = (id: getCategorieType) => getArticlesByCategoryAndRole(id, 'CUSTOMER');

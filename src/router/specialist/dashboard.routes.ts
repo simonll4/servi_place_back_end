@@ -1,10 +1,12 @@
 import express from 'express';
-import { getCustomerArticlesByCategories } from '../../controllers/articles.controller';
+
+import { getCustomerArticlesByCategories, postArticle } from '../../controllers/articles.controller';
 
 const router = express.Router();
 
 
 //actions that the client can perform from their dashboard
+router.post('/createArticle', postArticle);
 router.get('/articles', getCustomerArticlesByCategories );
 
 

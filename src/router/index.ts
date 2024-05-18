@@ -5,6 +5,7 @@ import specialistRoutes from './specialist.routes';
 import customerRoutes from './customer.routes';
 
 import { authenticateTokenCustomer, authenticateTokenSpecialist } from "../middlewares/auth.jwt";
+import categoriesRoutes from "./categories/categories.routes";
 
 
 
@@ -16,6 +17,9 @@ router.use('/auth', authRoute);
 router.use('/specialist', authenticateTokenSpecialist, specialistRoutes);
 //routes for customer
 router.use('/customer', authenticateTokenCustomer, customerRoutes);
+
+// MODERATOR
+router.use('/categories',categoriesRoutes);
 
 
 export default router;

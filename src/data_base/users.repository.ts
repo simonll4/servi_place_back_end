@@ -17,6 +17,7 @@ export const createUser = async (user: CreateUserType) => {
             role: user.role,
             name: user.name,
             last_name: user.last_name,
+            description: '',
             profile_picture: user.profile_picture
         }
     });
