@@ -53,6 +53,20 @@ const errorHandler: ErrorRequestHandler = async (err, req, res, next) => {
         return res.status(404).json({ error: 'Table not found.' });
       case 'P2022':
         return res.status(404).json({ error: 'Database not found.' });
+    }
+  }
+
+  if (err.status === 401 && err.message === "without JWT") {
+    return res.status(401).json({ error: 'unauthorized' })
+  } else if (err.status === 401) {
+    return res.status(401).json({ error: 'invalid credentials' });
+  }
+  if (err.type === 'entity.parse.failed') return res.status(400).json({ error: 'wrong formatted JSON' });
+  if (err.message === 'invalid credentials') return res.status(401).json({ error: 'invalid credentials' });
+  return res.status(500).json({ error: 'internal server error' });
+}
+
+export default errorHandler;
 
       // if (err.code === 'P2002') {
       //   const fieldName = err.meta?.target; // Add null check for err.meta
@@ -68,17 +82,3 @@ const errorHandler: ErrorRequestHandler = async (err, req, res, next) => {
       //   const relationField = err.meta?.relation_field;
       //   return res.status(409).json({ error: `Foreign key error on ${modelName} with ${relationField}` });
       // }
-    }
-  }
-
-  if (err.status === 401 && err.message === "without JWT") {
-    return res.status(401).json({ error: 'unauthorized' })
-  } else if (err.status === 401) {
-    return res.status(401).json({ error: 'invalid credentials' });
-  }
-  if (err.type === 'entity.parse.failed') return res.status(400).json({ error: 'wrong formatted JSON' });
-  if (err.message === 'invalid credentials') return res.status(401).json({ error: 'invalid credentials' });
-  return res.status(500).json({ error: 'internal server error' });
-}
-
-export default errorHandler;

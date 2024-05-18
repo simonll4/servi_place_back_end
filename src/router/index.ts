@@ -4,6 +4,7 @@ import authRoute from './authentication/auth.routes';
 import specialistRoutes from './specialist.routes';
 import customerRoutes from './customer.routes';
 
+
 import { authenticateTokenCustomer, authenticateTokenSpecialist } from "../middlewares/auth.jwt";
 import categoriesRoutes from "./categories/categories.routes";
 
@@ -20,6 +21,9 @@ router.use('/customer', authenticateTokenCustomer, customerRoutes);
 
 // MODERATOR
 router.use('/categories',categoriesRoutes);
+
+//Mover dsp
+
 
 
 export default router;

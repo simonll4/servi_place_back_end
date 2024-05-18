@@ -26,8 +26,8 @@ model Users {
   articles        Articles[]
   chatsInitiated  Chats[]        @relation("ChatsInitiated")
   chatsReceived   Chats[]        @relation("ChatsReceived")
-  jobs1           Jobs[]         @relation("Jobs1")
-  jobs2           Jobs[]         @relation("Jobs2")
+  customerJobs    Jobs[]         @relation("customerJobs")
+  specialistJobs  Jobs[]         @relation("specialistJobs")
   createdAt       DateTime       @default(now())
   updatedAt       DateTime       @updatedAt
   Messages        Messages[]
@@ -85,11 +85,21 @@ model Messages {
 
 model Jobs {
   id           Int    @id @default(autoincrement())
-  state        String
+  name         String 
+  description   String 
+  state        JobState
   idCustomer   Int
   idSpecialist Int
-  user1        Users  @relation(fields: [idCustomer], references: [id], name: "Jobs1")
-  user2        Users  @relation(fields: [idSpecialist], references: [id], name: "Jobs2")
+  user1        Users  @relation(fields: [idCustomer], references: [id], name: "customerJobs")
+  user2        Users  @relation(fields: [idSpecialist], references: [id], name: "specialistJobs")
+
+}
+
+enum JobState {
+  PENDING
+  ACCEPTED
+  REJECTED
+  FINISHED
 }
 
 enum Role {
