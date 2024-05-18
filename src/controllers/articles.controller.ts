@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from 'express'
 
-import { createArticle, getArticlesByUser } from '../data_base/articles.repository'
+import { createArticle, getAllCustomerArticles, getAllSpecialistArticles, getArticlesByUser } from '../data_base/articles.repository'
 import { findUser } from '../data_base/users.repository'
 import { getCustomerArticlesByCategory, getSpecialistArticlesByCategory } from '../data_base/categories.repository'
 
@@ -83,28 +83,48 @@ export const postArticle = async (req: Request, res: Response, next: NextFunctio
 //     const params = req.query;
 
 
+
+// devuelve todos los articulos los especialistas o clientes por las categorias pasadas como parametro
+// si no paso ninguna categoria como parametro, me tira un getAll de todos los articulos de los especialistas o clientes
 // eslint-disable-next-line @typescript-eslint/ban-types
-async function getArticlesByCategories(req: Request, res: Response, next: NextFunction, getArticlesByCategory: Function): Promise<void> {
+async function getArticlesByCategories(req: Request, res: Response, next: NextFunction, getArticlesByCategory: Function, getAll: Function): Promise<void> {
     const params = req.query;
+    
 
     if (Object.keys(params).length === 0 || !params.categories) {
-        res.status(400).json({ message: 'Bad request' });
+        try {
+            const allArticles = await getAll();
+            res.status(200).json({ message: 'All articles', allArticles });
+        } catch (error) {
+            next(error);
+        }
+        return;
+    }
+
+    const categories = String(params.categories).split(',');
+    //const categories = String(params.categories).split(',');
+    if (categories.length > 5) {
+        res.status(400).json('Too many parameters provided. Please provide 5 or fewer parameters.');
+        return
     }
 
     try {
-        const categories = String(params.categories).split(',');
+
         const articlesPromises = categories.map(async category => {
             const articles = await getArticlesByCategory({ id: Number(category) });
             return (articles && Object.keys(articles).length > 0) ? articles : null;
         });
         const articlesArrays = (await Promise.all(articlesPromises)).filter(article => article !== null);
 
-        // devulve una lista de listas de objetos, cada lista es una categoria y los objetos son los articulos de esa categoria.
-        res.status(200).json({ message: 'Articles by categories', articlesArrays });
+        // Flatten the array of arrays into a single array
+        const flatArticlesArray = articlesArrays.flat();
+
+        // Devuelve una lista de objetos, donde cada objeto es un artículo.
+        res.status(200).json({ message: 'Articles by categories', flatArticlesArray });
     } catch (error) {
         next(error);
     }
 }
 
-export const getSpecialistArticlesByCategories = (req: Request, res: Response, next: NextFunction) => getArticlesByCategories(req, res, next, getSpecialistArticlesByCategory);
-export const getCustomerArticlesByCategories = (req: Request, res: Response, next: NextFunction) => getArticlesByCategories(req, res, next, getCustomerArticlesByCategory);
+export const getSpecialistArticlesByCategories = (req: Request, res: Response, next: NextFunction) => getArticlesByCategories(req, res, next, getSpecialistArticlesByCategory, getAllSpecialistArticles);
+export const getCustomerArticlesByCategories = (req: Request, res: Response, next: NextFunction) => getArticlesByCategories(req, res, next, getCustomerArticlesByCategory, getAllCustomerArticles);

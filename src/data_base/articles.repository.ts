@@ -17,6 +17,19 @@ export const createArticle = async (article: CreateArticleType) => {
     })
 }
 
+const getAllArticles = async (role: 'SPECIALIST' | 'CUSTOMER') => {
+    return await prisma.findMany({
+        where: {
+            author: {
+                role: role
+            }
+        }
+    });
+}
+export const getAllSpecialistArticles = () => getAllArticles('SPECIALIST');
+export const getAllCustomerArticles = () => getAllArticles('CUSTOMER');
+
+
 export const getArticlesByUser = async (authorId: getArticlesByUserType) => {
     return await prisma.findMany({
         where: {
@@ -30,6 +43,8 @@ export const findArticle = async (article: FindArticleType) => {
         where: {
             id: article.id
         }
-    })    
+    })
 }
+
+
 
