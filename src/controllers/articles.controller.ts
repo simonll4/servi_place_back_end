@@ -10,9 +10,10 @@ import { zParse } from '../services/zod.service'
 
 export const getAllArticlesByUser = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
+        console.log("hola hlaaaa")
         const user = await findUser({ id: Number(req.query.id) })
         if (!user) return next({ name: 'NotFoundError' })
-
+        
         const article = await getArticlesByUser({ authorId: user.id })
         res.status(200).json({ articles: article })
 

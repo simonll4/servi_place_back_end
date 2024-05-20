@@ -30,10 +30,10 @@ export const getAllSpecialistArticles = () => getAllArticles('SPECIALIST');
 export const getAllCustomerArticles = () => getAllArticles('CUSTOMER');
 
 
-export const getArticlesByUser = async (authorId: getArticlesByUserType) => {
+export const getArticlesByUser = async (id: getArticlesByUserType) => {
     return await prisma.findMany({
         where: {
-            authorId: authorId.authorId
+            authorId: id.authorId
         }
     })
 }

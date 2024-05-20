@@ -28,9 +28,9 @@ model Users {
   chatsReceived   Chats[]        @relation("ChatsReceived")
   customerJobs    Jobs[]         @relation("customerJobs")
   specialistJobs  Jobs[]         @relation("specialistJobs")
+  Messages        Messages[]
   createdAt       DateTime       @default(now())
   updatedAt       DateTime       @updatedAt
-  Messages        Messages[]
 }
 
 model Categories {
@@ -71,6 +71,8 @@ model Chats {
   userSender   Users      @relation(fields: [idUser1], references: [id], name: "ChatsInitiated")
   userReceiver Users      @relation(fields: [idUser2], references: [id], name: "ChatsReceived")
   messages     Messages[]
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
 }
 
 model Messages {
@@ -81,18 +83,33 @@ model Messages {
   chat      Chats    @relation(fields: [chatId], references: [id])
   author    Users    @relation(fields: [authorId], references: [id])
   createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Jobs {
-  id           Int    @id @default(autoincrement())
-  name         String 
-  description   String 
+  id           Int      @id @default(autoincrement())
+  name         String
+  description  String
   state        JobState
   idCustomer   Int
   idSpecialist Int
-  user1        Users  @relation(fields: [idCustomer], references: [id], name: "customerJobs")
-  user2        Users  @relation(fields: [idSpecialist], references: [id], name: "specialistJobs")
+  idReview     Int
+  user1        Users    @relation(fields: [idCustomer], references: [id], name: "customerJobs")
+  user2        Users    @relation(fields: [idSpecialist], references: [id], name: "specialistJobs")
+  review       Reviews?
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+}
 
+model Reviews {
+  id         Int      @id @default(autoincrement())
+  content    String
+  rating     Int
+  idCustomer Int
+  idJob      Int      @unique
+  job        Jobs     @relation(fields: [idJob], references: [id])
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
 }
 
 enum JobState {

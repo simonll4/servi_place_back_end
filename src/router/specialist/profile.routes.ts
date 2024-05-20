@@ -1,6 +1,7 @@
 import express from 'express';
 
 import { getProfileInformation } from '../../controllers/users.information.controller';
+import { getAllArticlesByUser } from '../../controllers/articles.controller';
 
 
 const router = express.Router();
@@ -9,5 +10,6 @@ const router = express.Router();
 
 // get user information
 router.get('/userInformation', getProfileInformation);
+router.get('/getAllUserArticles',getAllArticlesByUser);
 
 export default router;
