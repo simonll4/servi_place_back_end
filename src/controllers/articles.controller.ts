@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from 'express'
 
-import { createArticle, getAllCustomerArticles, getAllSpecialistArticles, getArticlesByUser } from '../data_base/articles.repository'
+import { createArticle, getAllCustomerArticles, getAllSpecialistArticles, getArticlesByUser, lastArticleByUser } from '../data_base/articles.repository'
 import { findUser } from '../data_base/users.repository'
 import { getCustomerArticlesByCategory, getSpecialistArticlesByCategory } from '../data_base/categories.repository'
 
@@ -10,10 +10,9 @@ import { zParse } from '../services/zod.service'
 
 export const getAllArticlesByUser = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-        console.log("hola hlaaaa")
         const user = await findUser({ id: Number(req.query.id) })
         if (!user) return next({ name: 'NotFoundError' })
-        
+
         const article = await getArticlesByUser({ authorId: user.id })
         res.status(200).json({ articles: article })
 
@@ -24,10 +23,7 @@ export const getAllArticlesByUser = async (req: Request, res: Response, next: Ne
 
 export const getAllArticles = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-        const user = await findUser({ id: req.body.decoded.id })
-        if (!user) return next({ name: 'NotFoundError' })
-
-        const articles = await getArticlesByUser({ authorId: user.id })
+        const articles = await getArticlesByUser({ authorId: req.body.decoded.id })
         res.status(200).json({ articles: articles })
     } catch (err) {
         next(err)
@@ -35,27 +31,59 @@ export const getAllArticles = async (req: Request, res: Response, next: NextFunc
 }
 
 
-///////////////////////////////////////////////////////////////////////////////
-/////////////////ME TRAE UN SOLO ARTICULO///////////////////////////////////////
-///////////////// POR SI LLEGA SI ES NECESARIO//////////////////////////////////
-// export const getArticle = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+
+// export const getMyLastArticle = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
 //     try {
-
-//         const article = await findArticle({ id: Number(req.query.id) })
-//         if (!article) return next({ name: 'NotFoundError' })
-
+//         const article = await lastArticleByUser(Number(req.body.decoded.id))
+//         if (!article) {
+//             res.status(404).json({ error: 'Article not found' });
+//             return;
+//         }
 //         res.status(200).json({ article: article })
 //     } catch (err) {
 //         next(err)
 //     }
 // }
 
+// export const getLastUserArticle = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+//     const SpecialistId = Number(req.params.id);
+
+
+// }
+
+
+const getLastArticle = async (userId: number, res: Response, next: NextFunction): Promise<void> => {
+    try {
+        const article = await lastArticleByUser(userId)
+        if (!article) {
+            res.status(404).json({ error: 'Article not found' });
+            return;
+        }
+        res.status(200).json({ article: article })
+    } catch (err) {
+        next(err)
+    }
+}
+
+export const getMyLastArticle = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    const userId = Number(req.body.decoded.id);
+    getLastArticle(userId, res, next);
+}
+
+export const getLastUserArticle = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    const userId = Number(req.params.id);
+
+    if (!await findUser({ id: userId })) {
+        res.status(404).json({ error: 'User not found' });
+        return;
+    }
+    getLastArticle(userId, res, next);
+}
+
 export const postArticle = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
 
     try {
-
         const { body } = await zParse(articleSchema, req)
-
         const article = await createArticle({
             title: body.title,
             paragraph: body.paragraph,
@@ -90,12 +118,12 @@ export const postArticle = async (req: Request, res: Response, next: NextFunctio
 // eslint-disable-next-line @typescript-eslint/ban-types
 async function getArticlesByCategories(req: Request, res: Response, next: NextFunction, getArticlesByCategory: Function, getAll: Function): Promise<void> {
     const params = req.query;
-    
+
 
     if (Object.keys(params).length === 0 || !params.categories) {
         try {
             const allArticles = await getAll();
-            res.status(200).json({ message: 'All articles', allArticles });
+            res.status(200).json({ message: 'All article`s', allArticles });
         } catch (error) {
             next(error);
         }

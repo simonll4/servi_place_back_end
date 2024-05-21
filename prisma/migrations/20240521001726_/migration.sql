@@ -57,6 +57,8 @@ CREATE TABLE "Chats" (
     "id" SERIAL NOT NULL,
     "idUser1" INTEGER NOT NULL,
     "idUser2" INTEGER NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
 
     CONSTRAINT "Chats_pkey" PRIMARY KEY ("id")
 );
@@ -68,6 +70,7 @@ CREATE TABLE "Messages" (
     "chatId" INTEGER NOT NULL,
     "authorId" INTEGER NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
 
     CONSTRAINT "Messages_pkey" PRIMARY KEY ("id")
 );
@@ -80,12 +83,30 @@ CREATE TABLE "Jobs" (
     "state" "JobState" NOT NULL,
     "idCustomer" INTEGER NOT NULL,
     "idSpecialist" INTEGER NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
 
     CONSTRAINT "Jobs_pkey" PRIMARY KEY ("id")
 );
 
+-- CreateTable
+CREATE TABLE "Reviews" (
+    "id" SERIAL NOT NULL,
+    "content" TEXT NOT NULL,
+    "rating" INTEGER NOT NULL,
+    "idCustomer" INTEGER NOT NULL,
+    "idJob" INTEGER NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "Reviews_pkey" PRIMARY KEY ("id")
+);
+
 -- CreateIndex
 CREATE UNIQUE INDEX "Users_email_key" ON "Users"("email");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Reviews_idJob_key" ON "Reviews"("idJob");
 
 -- AddForeignKey
 ALTER TABLE "UserCategory" ADD CONSTRAINT "UserCategory_userId_fkey" FOREIGN KEY ("userId") REFERENCES "Users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
@@ -116,3 +137,6 @@ ALTER TABLE "Jobs" ADD CONSTRAINT "Jobs_idCustomer_fkey" FOREIGN KEY ("idCustome
 
 -- AddForeignKey
 ALTER TABLE "Jobs" ADD CONSTRAINT "Jobs_idSpecialist_fkey" FOREIGN KEY ("idSpecialist") REFERENCES "Users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Reviews" ADD CONSTRAINT "Reviews_idJob_fkey" FOREIGN KEY ("idJob") REFERENCES "Jobs"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

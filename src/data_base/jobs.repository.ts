@@ -2,7 +2,7 @@ import { JobState, type Jobs } from '@prisma/client'
 import prisma from './models/jobs'
 
 
-type jobCreateType = Pick<Jobs, 'name' | 'description' | 'idCustomer' | 'idSpecialist' >
+type jobCreateType = Pick<Jobs, 'name' | 'description' | 'idCustomer' | 'idSpecialist'>
 type idJobsType = { idCustomer?: number, idSpecialist?: number };
 type idCustomerIdSpecialistType = { idCustomer: number,idSpecialist: number}
 
@@ -13,7 +13,7 @@ export const jobCreate = async (job: jobCreateType) => {
             description: job.description,
             idCustomer: job.idCustomer,
             idSpecialist: job.idSpecialist,
-            state: "PENDING"
+            state: "PENDING",
         }
     })
 }
@@ -60,14 +60,15 @@ export const findPendingJob = async (ids: idCustomerIdSpecialistType) => {
 }
 
 
-// model Jobs {
-//     id           Int    @id @default(autoincrement())
-//     name         String 
-//     description   String 
-//     state        JobState
-//     idCustomer   Int
-//     idSpecialist Int
-//     user1        Users  @relation(fields: [idCustomer], references: [id], name: "customerJobs")
-//     user2        Users  @relation(fields: [idSpecialist], references: [id], name: "specialistJobs")
+export const getReviewsBySpecialist = async (idSpecialist: number) => {
+    const jobs = await prisma.findMany({
+      where: {
+        idSpecialist: idSpecialist
+      },
+      include: {
+        review: true
+      }
+    })
   
-//   }
+    return jobs.map(job => job.review);
+  }

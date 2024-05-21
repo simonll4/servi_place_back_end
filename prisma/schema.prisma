@@ -93,7 +93,6 @@ model Jobs {
   state        JobState
   idCustomer   Int
   idSpecialist Int
-  idReview     Int
   user1        Users    @relation(fields: [idCustomer], references: [id], name: "customerJobs")
   user2        Users    @relation(fields: [idSpecialist], references: [id], name: "specialistJobs")
   review       Reviews?

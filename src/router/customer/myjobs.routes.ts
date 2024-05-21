@@ -1,6 +1,8 @@
 import { Router } from "express";
 
 import { createJob, finishJob, getJobByUser, rejectJob } from "../../controllers/jobs.controller";
+import { commentJob } from "../../controllers/reviews.controller";
+
 
 const router = Router();
 
@@ -14,6 +16,10 @@ router.post('/createJob', createJob);
 router.put('/rejectJob', rejectJob);
 // Change the status of a work from accepted to finished
 router.put('/finishJob', finishJob);
+// Create a new review
+router.post('/createReview',commentJob);
+
+
 
 
 

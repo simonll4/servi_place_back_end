@@ -2,13 +2,15 @@ import { NextFunction, Request, Response } from 'express'
 import { findUser } from '../data_base/users.repository'
 import { jobCreate, jobsByUser, getJob, stateJob, findPendingJob } from '../data_base/jobs.repository'
 import { JobState } from '@prisma/client'
+import { zParse } from '../services/zod.service'
+import { jobSchema } from '../middlewares/validation/job.validation'
 
 
 //Le paso el id del usuario que es el que esta logueado y el id del usuario al que le quiero crear el trabajo
 export const createJob = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
 
-        const specialistUser = await findUser({ id: req.body.idUser })
+        const specialistUser = await findUser({ id: req.body.idSpecialist })
         if (!specialistUser) {
             res.status(404).json({ message: 'Specialist not found' });
             return;
@@ -25,11 +27,13 @@ export const createJob = async (req: Request, res: Response, next: NextFunction)
             return;
         }
 
+        const { body } = await zParse(jobSchema, req)
+        console.log("sadasdsad")
         const job = await jobCreate({
-            name: req.body.name,
-            description: req.body.description,
+            name: body.name,
+            description: body.description,
             idCustomer: req.body.decoded.id,
-            idSpecialist: specialistUser.id
+            idSpecialist: body.idSpecialist
         })
         res.status(201).json({ message: 'Job created', job: job })
 

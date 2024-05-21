@@ -10,6 +10,7 @@ const router = express.Router();
 
 // get user information
 router.get('/userInformation', getProfileInformation);
-router.get('/getAllUserArticles',getAllArticlesByUser);
+// get all articles from a customers users
+router.get('/getAllUserArticles', getAllArticlesByUser);
 
 export default router;

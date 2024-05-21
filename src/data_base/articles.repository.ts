@@ -47,4 +47,14 @@ export const findArticle = async (article: FindArticleType) => {
 }
 
 
+export const lastArticleByUser = async (authorId: number) => {
+    return await prisma.findFirst({
+        where: {
+            authorId: authorId
+        },
+        orderBy: {
+            createdAt: 'desc'
+        }
+    });
+}
 
