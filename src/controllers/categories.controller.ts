@@ -5,9 +5,8 @@ export const createCategorie = async (req: Request, res: Response, next: NextFun
     try {        
         const categorie = await createCategory(req.body)
         res.status(201).json({ message: 'Category created', categorie: categorie })
-    } catch (err) {
-        console.log(err)
-        next(err)
+    } catch (error) {
+        next(error)
     }
 }
 
@@ -16,8 +15,8 @@ export const getCategorie = async (req: Request, res: Response, next: NextFuncti
         const id = req.query.id
         const categorie = await getCategory({id: Number(id)})
         res.status(200).json({ categorie: categorie})
-    } catch(err){
-        next(err)
+    } catch(error){
+        next(error)
     }
 }
 

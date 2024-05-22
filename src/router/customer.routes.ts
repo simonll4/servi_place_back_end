@@ -10,7 +10,7 @@ const router = Router();
 
 // Customer routes for screens
 router.use('/dashboard', dashboardRoutesCustomer);
-router.use('/myProfile', myProfileRoutesCustomer);
+router.use('/my-profile', myProfileRoutesCustomer);
 router.use('/profile', profileRoutes)
 router.use('/jobs', jobsRoutes)
 

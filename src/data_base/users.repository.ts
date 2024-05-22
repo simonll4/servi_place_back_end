@@ -28,3 +28,17 @@ export const findUser = async (user: FindUserType) => {
         where: user
     });
 };
+
+
+export const updateUserInformation = async (userId: number, updates: { name?: string, last_name?: string, email?: string, profile_picture?: string }) => {
+    const user = await prisma.findUnique({ where: { id: userId } });
+    if (!user) return null;
+    const updatedUser = await prisma.update({
+        where: { id: userId },
+        data: {
+            ...updates
+        }
+    });
+
+    return updatedUser;
+}

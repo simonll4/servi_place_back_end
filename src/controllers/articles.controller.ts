@@ -1,67 +1,52 @@
 import { NextFunction, Request, Response } from 'express'
-
 import { createArticle, getAllCustomerArticles, getAllSpecialistArticles, getArticlesByUser, lastArticleByUser } from '../data_base/articles.repository'
 import { findUser } from '../data_base/users.repository'
 import { getCustomerArticlesByCategory, getSpecialistArticlesByCategory } from '../data_base/categories.repository'
-
 import { articleSchema } from '../middlewares/validation/articles.validation'
 import { zParse } from '../services/zod.service'
 
 
 export const getAllArticlesByUser = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-        const user = await findUser({ id: Number(req.query.id) })
-        if (!user) return next({ name: 'NotFoundError' })
+        const userId = Number(req.params.id)
+        const user = await findUser({ id: userId })
 
+        if (!user) return next({ error: 'Not found user' })
+        if (user?.role === req.body.decoded.role) {
+            res.status(403).json({ error: 'Access denied: roles are equal' });
+            return;
+        }
         const article = await getArticlesByUser({ authorId: user.id })
-        res.status(200).json({ articles: article })
 
-    } catch (err) {
-        next(err)
+        res.status(200).json({ articles: article })
+    } catch (error) {
+        next(error)
     }
 }
 
 export const getAllArticles = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
         const articles = await getArticlesByUser({ authorId: req.body.decoded.id })
+
         res.status(200).json({ articles: articles })
-    } catch (err) {
-        next(err)
+    } catch (error) {
+        next(error)
     }
 }
-
-
-
-// export const getMyLastArticle = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-//     try {
-//         const article = await lastArticleByUser(Number(req.body.decoded.id))
-//         if (!article) {
-//             res.status(404).json({ error: 'Article not found' });
-//             return;
-//         }
-//         res.status(200).json({ article: article })
-//     } catch (err) {
-//         next(err)
-//     }
-// }
-
-// export const getLastUserArticle = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-//     const SpecialistId = Number(req.params.id);
-
-
-// }
 
 
 const getLastArticle = async (userId: number, res: Response, next: NextFunction): Promise<void> => {
     try {
         const article = await lastArticleByUser(userId)
+
         if (!article) {
             res.status(404).json({ error: 'Article not found' });
             return;
         }
+
         res.status(200).json({ article: article })
-    } catch (err) {
-        next(err)
+    } catch (error) {
+        next(error)
     }
 }
 
@@ -72,7 +57,6 @@ export const getMyLastArticle = async (req: Request, res: Response, next: NextFu
 
 export const getLastUserArticle = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const userId = Number(req.params.id);
-
     if (!await findUser({ id: userId })) {
         res.status(404).json({ error: 'User not found' });
         return;
@@ -81,9 +65,9 @@ export const getLastUserArticle = async (req: Request, res: Response, next: Next
 }
 
 export const postArticle = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-
     try {
         const { body } = await zParse(articleSchema, req)
+
         const article = await createArticle({
             title: body.title,
             paragraph: body.paragraph,
@@ -91,7 +75,7 @@ export const postArticle = async (req: Request, res: Response, next: NextFunctio
             authorId: req.body.decoded.id,
             image: body.image
         })
-        console.log(req.body)
+
         res.status(201).json({ message: 'Article created', article: article })
     } catch (error) {
         next(error)
@@ -99,26 +83,9 @@ export const postArticle = async (req: Request, res: Response, next: NextFunctio
 }
 
 
-
-// const categories = [1, 2, 3]; // The category IDs you want to search for
-// const url = `http://your-api-url/getArticlesByCategories?categories=${categories.join(',')}`;
-
-// fetch(url)
-//   .then(response => response.json())
-//   .then(data => console.log(data))
-//   .catch(error => console.error('Error:', error));
-
-// export const getSpecialistArticlesByCategories = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-//     const params = req.query;
-
-
-
-// devuelve todos los articulos los especialistas o clientes por las categorias pasadas como parametro
-// si no paso ninguna categoria como parametro, me tira un getAll de todos los articulos de los especialistas o clientes
 // eslint-disable-next-line @typescript-eslint/ban-types
 async function getArticlesByCategories(req: Request, res: Response, next: NextFunction, getArticlesByCategory: Function, getAll: Function): Promise<void> {
     const params = req.query;
-
 
     if (Object.keys(params).length === 0 || !params.categories) {
         try {
@@ -131,9 +98,8 @@ async function getArticlesByCategories(req: Request, res: Response, next: NextFu
     }
 
     const categories = String(params.categories).split(',');
-    //const categories = String(params.categories).split(',');
     if (categories.length > 5) {
-        res.status(400).json('Too many parameters provided. Please provide 5 or fewer parameters.');
+        res.status(400).json({ error: 'Parameter limit exceeded, only 5 categories are allowed.' });
         return
     }
 
@@ -144,11 +110,10 @@ async function getArticlesByCategories(req: Request, res: Response, next: NextFu
             return (articles && Object.keys(articles).length > 0) ? articles : null;
         });
         const articlesArrays = (await Promise.all(articlesPromises)).filter(article => article !== null);
-
-        // Flatten the array of arrays into a single array
+        // grabs the array of article arrays and turns it into a single array
         const flatArticlesArray = articlesArrays.flat();
-
-        // Devuelve una lista de objetos, donde cada objeto es un artículo.
+        
+        // Returns a list of objects, where each object is an item.
         res.status(200).json({ message: 'Articles by categories', flatArticlesArray });
     } catch (error) {
         next(error);

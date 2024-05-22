@@ -19,7 +19,6 @@ export const jobCreate = async (job: jobCreateType) => {
 }
 
 export const getJob = async (idJob: number) => {
-    console.log(idJob)
     return await prisma.findUnique({
         where: {
             id: idJob

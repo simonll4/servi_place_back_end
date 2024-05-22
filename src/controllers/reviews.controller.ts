@@ -7,13 +7,22 @@ import { findUser } from '../data_base/users.repository'
 
 
 export const commentJob = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-
+  const user = req.body.decoded
   const { body } = await zParse(reviewSchema, req)
 
   try {
     const job = await getJob(body.idJob)
+
+    if (!job) {
+      res.status(404).json({ error: 'Job not found' });
+      return;
+    }
+    if (job.idCustomer !== user.id) {
+      res.status(401).json({ error: 'You are not allowed to comment on this job' });
+      return;
+    }
     if (job?.state !== 'FINISHED') {
-      res.status(400).json({ message: 'The job is not finished' });
+      res.status(400).json({ error: 'The job is not finished' });
       return;
     }
 
@@ -45,12 +54,10 @@ export const getReviewsByUser = async (req: Request, res: Response, next: NextFu
 
   try {
     if (!findUser({ id: Number(idSpecialist) })) {
-      res.status(404).json({ message: 'User not found' })
+      res.status(404).json({ error: 'User not found' })
       return
     }
-
     const filteredReviews = await getFilteredReviews(Number(idSpecialist))
-
     res.status(200).json({ reviews: filteredReviews });
   } catch (error) {
     next(error)

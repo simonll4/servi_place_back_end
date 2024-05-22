@@ -10,7 +10,7 @@ const router = Router();
 
 // Specialist routes for screens
 router.use('/dashboard', dashboardRoutesSpecialist);
-router.use('/myProfile',myProfileRoutesSpecialist);
+router.use('/my-profile', myProfileRoutesSpecialist);
 router.use('/profile', profileRoutes)
 router.use('/jobs', jobsRoutes)
 

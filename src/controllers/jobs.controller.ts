@@ -10,32 +10,31 @@ import { jobSchema } from '../middlewares/validation/job.validation'
 export const createJob = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
 
-        const specialistUser = await findUser({ id: req.body.idSpecialist })
+        const specialistUser = await findUser({ id: req.body.idSpecialist });
+
         if (!specialistUser) {
-            res.status(404).json({ message: 'Specialist not found' });
+            res.status(404).json({ error: 'Specialist not found' });
             return;
         }
-
         if (req.body.decoded.role === specialistUser?.role) {
-            res.status(400).json({ message: 'the job created must have a specialist assigned' });
+            res.status(400).json({ error: 'the job created must have a specialist assigned' });
             return;
         }
-
         const pendingJob = await findPendingJob({ idCustomer: req.body.decoded.id, idSpecialist: specialistUser.id });
         if (pendingJob) {
-            res.status(400).json({ message: 'There is already a pending job with the specialist' });
+            res.status(400).json({ error: 'There is already a pending job with the specialist' });
             return;
         }
 
-        const { body } = await zParse(jobSchema, req)
-        console.log("sadasdsad")
+        const { body } = await zParse(jobSchema, req);
         const job = await jobCreate({
             name: body.name,
             description: body.description,
             idCustomer: req.body.decoded.id,
             idSpecialist: body.idSpecialist
-        })
-        res.status(201).json({ message: 'Job created', job: job })
+        });
+
+        res.status(201).json({ message: 'Job created', job: job });
 
     } catch (error) {
         next(error)
@@ -44,10 +43,9 @@ export const createJob = async (req: Request, res: Response, next: NextFunction)
 
 export const getJobByUser = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-
         const idType = req.body.decoded.role === 'CUSTOMER' ? 'idCustomer' : 'idSpecialist';
-        console.log(idType)
         const jobs = await jobsByUser({ [idType]: Number(req.body.decoded.id) });
+
         res.status(200).json({ jobs: jobs })
     } catch (error) {
         next(error)
@@ -56,20 +54,24 @@ export const getJobByUser = async (req: Request, res: Response, next: NextFuncti
 
 export const acceptJob = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
+        const userId = Number(req.body.decoded.id);
+        const idJob = Number(req.params.id);
+        const job = await getJob(idJob)
 
-        const job = await getJob(req.body.idJob)
         if (!job) {
-            res.status(404).json({ message: 'Not found job' });
+            res.status(404).json({ error: 'Not found job' });
             return;
         }
-
+        if (!(job.idCustomer === userId) && !(job.idSpecialist === userId)) {
+            res.status(400).json({ error: 'You are not the owner of the job' });
+            return;
+        }
         if (job.state !== JobState.PENDING) {
-            res.status(400).json({ message: 'Job is not pending' });
+            res.status(400).json({ error: 'Job is not pending' });
             return;
         }
 
-        res.status(201).json({ message: 'Job updated', job: await stateJob({ id: req.body.idJob }, JobState.ACCEPTED) })
-
+        res.status(201).json({ message: 'Job updated', job: await stateJob({ id: idJob }, JobState.ACCEPTED) })
     } catch (error) {
         next(error)
     }
@@ -77,20 +79,25 @@ export const acceptJob = async (req: Request, res: Response, next: NextFunction)
 
 export const rejectJob = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-        const job = await getJob(req.body.idJob);
+        const userId = Number(req.body.decoded.id);
+        const jobId = Number(req.params.id);
+        const job = await getJob(jobId);
+
         if (!job) {
             res.status(404).json({ message: 'Not found job' });
             return;
         }
-
+        if (!(job.idCustomer === userId) && !(job.idSpecialist === userId)) {
+            res.status(400).json({ message: 'You are not the owner of the job' });
+            return;
+        }
         if (job.state == JobState.ACCEPTED || job.state == JobState.PENDING) {
-            res.status(201).json({ message: 'Job updated', job: await stateJob({ id: req.body.idJob }, JobState.REJECTED) })
+            res.status(201).json({ message: 'Job updated', job: await stateJob({ id: jobId }, JobState.REJECTED) })
         }
         else {
             res.status(400).json({ message: 'Job is not accepted or is not pending' });
             return;
         }
-
     } catch (error) {
         next(error)
     }
@@ -99,17 +106,18 @@ export const rejectJob = async (req: Request, res: Response, next: NextFunction)
 
 export const finishJob = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
+        const jobId = Number(req.params.id);
+        const job = await getJob(jobId)
 
-        const job = await getJob(req.body.idJob)
         if (!job) {
-            res.status(404).json({ message: 'Not found job' });
+            res.status(404).json({ error: 'Not found job' });
             return;
         }
         if (job.state !== JobState.ACCEPTED) {
-            res.status(400).json({ message: 'Job is not accepted' });
+            res.status(400).json({ error: 'Job is not accepted' });
             return;
         }
-        res.status(201).json({ message: 'Job updated', job: await stateJob({ id: req.body.idJob }, JobState.FINISHED) })
+        res.status(201).json({ message: 'Job updated', job: await stateJob({ id: jobId }, JobState.FINISHED) })
 
     } catch (error) {
         next(error)
