@@ -2,7 +2,7 @@ import express from 'express';
 
 import { getProfileInformation } from '../../controllers/users.information.controller';
 import { getAllArticlesByUser, getLastUserArticle } from '../../controllers/articles.controller';
-import { getReviewsByUser } from '../../controllers/reviews.controller';
+import { getReviewsByUser, getSummaryreviewsByUser } from '../../controllers/reviews.controller';
 
 
 const router = express.Router();
@@ -13,10 +13,12 @@ const router = express.Router();
 router.get('/user-information/:id', getProfileInformation);
 // get all articles from a user
 router.get('/articles/:id', getAllArticlesByUser);
-// get reviews from a user
-router.get('/reviews/:id', getReviewsByUser);
 // get last article from a specific user
 router.get('/last-article/:id', getLastUserArticle);
+// get reviews from a user
+router.get('/reviews/:id', getReviewsByUser);
+// get summary reviews from a user
+router.get('/summary-reviews/:id',getSummaryreviewsByUser);
 
 
 export default router;

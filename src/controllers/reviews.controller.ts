@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from 'express'
-import { createReview } from '../data_base/reviews.repository'
+import { createReview, summaryReviews } from '../data_base/reviews.repository'
 import { reviewSchema } from '../middlewares/validation/reviews.validation'
 import { zParse } from '../services/zod.service'
 import { getJob, getReviewsBySpecialist } from '../data_base/jobs.repository'
@@ -76,14 +76,28 @@ export const getMyReviews = async (req: Request, res: Response, next: NextFuncti
 }
 
 
+export const getSummaryreviewsByUser = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  try {
+    const specialistId = Number(req.params.id);
+    const user = await findUser({ id: specialistId });
 
-// model Reviews {
-//   id         Int      @id @default(autoincrement())
-//   content    String
-//   rating     Int
-//   idCustomer Int
-//   idJob      Int      @unique
-//   job        Jobs     @relation(fields: [idJob], references: [id])
-//   createdAt  DateTime   @default(now())
-//   updatedAt  DateTime   @updatedAt
-// }
+    if (!user) {
+      res.status(404).send('User not found');
+      return;
+    }
+    if (user.role !== 'SPECIALIST') {
+      res.status(400).send({ error: 'User is not a specialist' });
+      return;
+    }
+    const summary = await summaryReviews(specialistId);
+
+    const data = Object.entries(summary).map(([star, count]) => ({
+      star: Number(star),
+      count: count
+    }));
+
+    res.status(200).json(data);
+  } catch (error) {
+    next(error);
+  }
+}

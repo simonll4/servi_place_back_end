@@ -4,7 +4,7 @@ import prisma from './models/jobs'
 
 type jobCreateType = Pick<Jobs, 'name' | 'description' | 'idCustomer' | 'idSpecialist'>
 type idJobsType = { idCustomer?: number, idSpecialist?: number };
-type idCustomerIdSpecialistType = { idCustomer: number,idSpecialist: number}
+type idCustomerIdSpecialistType = { idCustomer: number, idSpecialist: number }
 
 export const jobCreate = async (job: jobCreateType) => {
     return await prisma.create({
@@ -36,7 +36,7 @@ export const jobsByUser = async (id: idJobsType) => {
     });
 }
 
-export const stateJob = async (id: {id: number}, state: JobState) => {
+export const stateJob = async (id: { id: number }, state: JobState) => {
     return await prisma.update({
         where: {
             id: id.id
@@ -61,13 +61,25 @@ export const findPendingJob = async (ids: idCustomerIdSpecialistType) => {
 
 export const getReviewsBySpecialist = async (idSpecialist: number) => {
     const jobs = await prisma.findMany({
-      where: {
-        idSpecialist: idSpecialist
-      },
-      include: {
-        review: true
-      }
+        where: {
+            idSpecialist: idSpecialist
+        },
+        include: {
+            review: true
+        }
     })
-  
+
     return jobs.map(job => job.review);
-  }
+}
+
+
+export const getJobs = async (idSpecialist: number) => {
+    return prisma.findMany({
+        where: {
+            idSpecialist: idSpecialist
+        },
+        select: {
+            id: true
+        }
+    });
+}
