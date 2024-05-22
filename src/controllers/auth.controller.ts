@@ -27,7 +27,9 @@ export const register = async (req: Request, res: Response, next: NextFunction):
         });
 
         const token = generateToken(user)
-        res.status(201).json({ token: 'Bearer ' + token })
+        res.status(201)
+            .header('Authorization', 'Bearer ' + token)
+            .json({ message: 'Register success', role: user.role });
     } catch (error) {
         next(error)
     }
@@ -47,7 +49,7 @@ export const login = async (req: Request, res: Response, next: NextFunction): Pr
         const token = generateToken(user)
         res.status(200)
             .header('Authorization', 'Bearer ' + token)
-            .json({ message: 'Login success' });
+            .json({ message: 'Login success', role: user.role });
     } catch (error) {
         next(error)
     }
