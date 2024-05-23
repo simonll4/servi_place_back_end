@@ -7,11 +7,13 @@ import { findUser } from '../data_base/users.repository'
 
 
 export const commentJob = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-  const user = req.body.decoded
-  const { body } = await zParse(reviewSchema, req)
+  const user = req.body.decoded;
+  const jobId = Number(req.params.id);
+
 
   try {
-    const job = await getJob(body.idJob)
+    const { body } = await zParse(reviewSchema, req);
+    const job = await getJob(jobId);
 
     if (!job) {
       res.status(404).json({ error: 'Job not found' });
@@ -26,7 +28,7 @@ export const commentJob = async (req: Request, res: Response, next: NextFunction
       return;
     }
 
-    const review = await createReview({ content: body.content, rating: body.rating, idCustomer: req.body.decoded.id, idJob: body.idJob })
+    const review = await createReview({ content: body.content, rating: body.rating, idCustomer: req.body.decoded.id, idJob: jobId })
     res.status(201).json({ message: 'Review created', review })
   } catch (error) {
     next(error)

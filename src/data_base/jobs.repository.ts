@@ -48,12 +48,14 @@ export const stateJob = async (id: { id: number }, state: JobState) => {
 }
 
 
-export const findPendingJob = async (ids: idCustomerIdSpecialistType) => {
+export const findStartedJob = async (ids: idCustomerIdSpecialistType) => {
     return await prisma.findFirst({
         where: {
             idCustomer: ids.idCustomer,
             idSpecialist: ids.idSpecialist,
-            state: JobState.PENDING
+            state: {
+                in: [JobState.PENDING, JobState.ACCEPTED]
+            }
         }
     });
 }

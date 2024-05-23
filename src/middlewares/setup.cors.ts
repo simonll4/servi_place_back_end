@@ -6,5 +6,5 @@ export const setupCors = cors({
   exposedHeaders: ['Authorization'],
   allowedHeaders: ['Origin', 'X-Requested-With', 'Content-Type', 'Accept', 'Authorization'],
   credentials: true, // si necesitas soportar cookies
-  preflightContinue: true,
+  preflightContinue: false,
 });

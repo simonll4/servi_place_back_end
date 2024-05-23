@@ -37,6 +37,7 @@ export const register = async (req: Request, res: Response, next: NextFunction):
 
 export const login = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
+        console.log('login')
         const { body } = await zParse(authLoginSchema, req)
         const { email, password } = body
 
@@ -49,7 +50,7 @@ export const login = async (req: Request, res: Response, next: NextFunction): Pr
         const token = generateToken(user)
         res.status(200)
             .header('Authorization', 'Bearer ' + token)
-            .json({ message: 'Login success', role: user.role });
+            .json({ message: 'Login success', role: user.role, token: token });
     } catch (error) {
         next(error)
     }

@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from 'express'
 import { findUser } from '../data_base/users.repository'
-import { jobCreate, jobsByUser, getJob, stateJob, findPendingJob } from '../data_base/jobs.repository'
+import { jobCreate, jobsByUser, getJob, stateJob, findStartedJob } from '../data_base/jobs.repository'
 import { JobState } from '@prisma/client'
 import { zParse } from '../services/zod.service'
 import { jobSchema } from '../middlewares/validation/job.validation'
@@ -20,9 +20,9 @@ export const createJob = async (req: Request, res: Response, next: NextFunction)
             res.status(400).json({ error: 'the job created must have a specialist assigned' });
             return;
         }
-        const pendingJob = await findPendingJob({ idCustomer: req.body.decoded.id, idSpecialist: specialistUser.id });
+        const pendingJob = await findStartedJob({ idCustomer: req.body.decoded.id, idSpecialist: specialistUser.id });
         if (pendingJob) {
-            res.status(400).json({ error: 'There is already a pending job with the specialist' });
+            res.status(400).json({ error: 'There is already a pending or accepted job with the specialist' });
             return;
         }
 
@@ -45,8 +45,8 @@ export const getJobByUser = async (req: Request, res: Response, next: NextFuncti
     try {
         const idType = req.body.decoded.role === 'CUSTOMER' ? 'idCustomer' : 'idSpecialist';
         const jobs = await jobsByUser({ [idType]: Number(req.body.decoded.id) });
-
-        res.status(200).json({ jobs: jobs })
+        const sortedJobs = jobs.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+        res.status(200).json({ jobs: sortedJobs })
     } catch (error) {
         next(error)
     }

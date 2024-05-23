@@ -18,7 +18,8 @@ router.get('/last-article/:id', getLastUserArticle);
 // get reviews from a user
 router.get('/reviews/:id', getReviewsByUser);
 // get summary reviews from a user
-router.get('/summary-reviews/:id',getSummaryreviewsByUser);
+router.get('/summary-reviews/:id', getSummaryreviewsByUser);
+
 
 
 export default router;

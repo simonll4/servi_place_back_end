@@ -10,15 +10,14 @@ const router = Router();
 
 // Bring a user's jobs by taking the token id
 router.get('/my-jobs', getJobByUser);
-// Create a new job
-router.post('/create-job', createJob);
 //Change the status of a work from slope to rejected
 router.put('/reject-job/:id', rejectJob);
 // Change the status of a work from accepted to finished
 router.put('/finish-job/:id', finishJob);
 // Create a new review
-router.post('/create-review', commentJob);
-
+router.post('/create-review/:id', commentJob);
+// Create a new job
+router.post('/create-job', createJob);
 
 
 

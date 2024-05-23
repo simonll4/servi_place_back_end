@@ -112,9 +112,10 @@ async function getArticlesByCategories(req: Request, res: Response, next: NextFu
         const articlesArrays = (await Promise.all(articlesPromises)).filter(article => article !== null);
         // grabs the array of article arrays and turns it into a single array
         const flatArticlesArray = articlesArrays.flat();
-        
+        // Sort the articles by date
+        const sortedArticles = flatArticlesArray.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
         // Returns a list of objects, where each object is an item.
-        res.status(200).json({ message: 'Articles by categories', flatArticlesArray });
+        res.status(200).json({ message: 'Articles by categories', sortedArticles });
     } catch (error) {
         next(error);
     }
