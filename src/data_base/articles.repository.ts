@@ -47,6 +47,17 @@ export const findArticle = async (article: FindArticleType) => {
 }
 
 
+// export const lastArticleByUser = async (authorId: number) => {
+//     return await prisma.findFirst({
+//         where: {
+//             authorId: authorId
+//         },
+//         orderBy: {
+//             createdAt: 'desc'
+//         }
+//     });
+// }
+
 export const lastArticleByUser = async (authorId: number) => {
     return await prisma.findFirst({
         where: {
@@ -54,6 +65,13 @@ export const lastArticleByUser = async (authorId: number) => {
         },
         orderBy: {
             createdAt: 'desc'
+        },
+        include: {
+            category:{
+                select:{
+                    name:true
+                }
+            }
         }
     });
 }

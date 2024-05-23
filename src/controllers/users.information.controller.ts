@@ -48,10 +48,10 @@ export const getMyInformation = async (req: Request, res: Response, next: NextFu
 export const updateMyInformation = async (req: Request, res: Response, next: NextFunction) => {
 
   const userId = req.body.decoded.id;
-  const { name, last_name, email, profile_picture } = req.body;
+  const { name, last_name, email, profile_picture, description } = req.body;
 
   try {
-    const updatedUser = await updateUserInformation(userId, { name, last_name, email, profile_picture });
+    const updatedUser = await updateUserInformation(userId, { name, last_name, email, profile_picture, description });
     if (!updatedUser) {
       res.status(404).json({ error: 'User not found' });
       return;

@@ -30,7 +30,7 @@ export const findUser = async (user: FindUserType) => {
 };
 
 
-export const updateUserInformation = async (userId: number, updates: { name?: string, last_name?: string, email?: string, profile_picture?: string }) => {
+export const updateUserInformation = async (userId: number, updates: { name?: string, last_name?: string, email?: string, profile_picture?: string, description?: string }) => {
     const user = await prisma.findUnique({ where: { id: userId } });
     if (!user) return null;
     const updatedUser = await prisma.update({
