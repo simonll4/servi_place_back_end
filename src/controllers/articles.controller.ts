@@ -89,8 +89,8 @@ async function getArticlesByCategories(req: Request, res: Response, next: NextFu
 
     if (Object.keys(params).length === 0 || !params.categories) {
         try {
-            const allArticles = await getAll();
-            res.status(200).json({ message: 'All article`s', allArticles });
+            const articles = await getAll();
+            res.status(200).json({ message: 'Articles by categories', articles });
         } catch (error) {
             next(error);
         }
@@ -104,7 +104,6 @@ async function getArticlesByCategories(req: Request, res: Response, next: NextFu
     }
 
     try {
-
         const articlesPromises = categories.map(async category => {
             const articles = await getArticlesByCategory({ id: Number(category) });
             return (articles && Object.keys(articles).length > 0) ? articles : null;
@@ -113,9 +112,9 @@ async function getArticlesByCategories(req: Request, res: Response, next: NextFu
         // grabs the array of article arrays and turns it into a single array
         const flatArticlesArray = articlesArrays.flat();
         // Sort the articles by date
-        const sortedArticles = flatArticlesArray.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+        const articles = flatArticlesArray.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
         // Returns a list of objects, where each object is an item.
-        res.status(200).json({ message: 'Articles by categories', sortedArticles });
+        res.status(200).json({ message: 'Articles by categories', articles });
     } catch (error) {
         next(error);
     }
