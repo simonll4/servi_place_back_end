@@ -23,6 +23,16 @@ const getAllArticles = async (role: 'SPECIALIST' | 'CUSTOMER') => {
             author: {
                 role: role
             }
+        },
+        orderBy: {
+            createdAt: 'desc'
+        },
+        include: {
+            category: {
+                select: {
+                    name: true
+                }
+            }
         }
     });
 }
@@ -34,6 +44,16 @@ export const getArticlesByUser = async (id: getArticlesByUserType) => {
     return await prisma.findMany({
         where: {
             authorId: id.authorId
+        },
+        orderBy: {
+            createdAt: 'desc'
+        },
+        include: {
+            category: {
+                select: {
+                    name: true
+                }
+            }
         }
     })
 }
@@ -42,21 +62,12 @@ export const findArticle = async (article: FindArticleType) => {
     return await prisma.findUnique({
         where: {
             id: article.id
-        }
+        },
+
+
     })
 }
 
-
-// export const lastArticleByUser = async (authorId: number) => {
-//     return await prisma.findFirst({
-//         where: {
-//             authorId: authorId
-//         },
-//         orderBy: {
-//             createdAt: 'desc'
-//         }
-//     });
-// }
 
 export const lastArticleByUser = async (authorId: number) => {
     return await prisma.findFirst({
@@ -67,9 +78,9 @@ export const lastArticleByUser = async (authorId: number) => {
             createdAt: 'desc'
         },
         include: {
-            category:{
-                select:{
-                    name:true
+            category: {
+                select: {
+                    name: true
                 }
             }
         }
