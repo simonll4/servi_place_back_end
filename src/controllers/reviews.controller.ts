@@ -37,19 +37,56 @@ export const commentJob = async (req: Request, res: Response, next: NextFunction
 
 
 const getFilteredReviews = async (idSpecialist: number) => {
-  const reviews = await getReviewsBySpecialist(idSpecialist);
-  return reviews.map(review => {
-    if (review) {
+  const jobs = await getReviewsBySpecialist(idSpecialist);
+  return jobs.map(job => {
+    if (job.review) {
       return {
-        id: review.id,
-        content: review.content,
-        rating: review.rating,
-        idCustomer: review.idCustomer
+        idJob: job.id,
+        finishedDate: job.updatedAt,
+        reviewId: job.review?.id,
+        reviewContent: job.review?.content,
+        reviewRating: job.review?.rating,
+        reviewClient: job.user1.name + " " + job.user1.last_name,
+        reviewClientPicture: job.user1.profile_picture
       };
     }
     return null;
   }).filter(review => review !== null);
 }
+// {
+//   id: 2,
+//   name: 'a labuar 3 ',
+//   description: 'te voy a pagar pquito 3',
+//   state: 'FINISHED',
+//   idCustomer: 3,
+//   idSpecialist: 4,
+//   createdAt: 2024-05-24T23:36:42.577Z,
+//   updatedAt: 2024-05-24T23:38:49.577Z,
+//   review: {
+//     id: 2,
+//     content: 'tremendo perro bien ahi',
+//     rating: 4,
+//     idCustomer: 3,
+//     idJob: 2,
+//     createdAt: 2024-05-24T23:40:13.710Z,
+//     updatedAt: 2024-05-24T23:40:13.710Z
+//   },
+//   user1: {
+//     id: 3,
+//     email: 'martincliente@hotmail.com',
+//     password: '$2b$10$OrvLYZlDWy/QJLs1tHWWQuxoQI7JSOvhdbzfVrrkOjVKaInZYOZbG',
+//     name: 'martincliente',
+//     last_name: 'cliente',
+//     description: '',
+//     role: 'CUSTOMER',
+//     profile_picture: 'https://i.imgur.com/ez02Lc6.png',
+//     createdAt: 2024-05-23T22:30:32.507Z,
+//     updatedAt: 2024-05-23T22:30:32.507Z
+//   }
+// }
+
+
+
 
 export const getReviewsByUser = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   const idSpecialist = req.params.id
