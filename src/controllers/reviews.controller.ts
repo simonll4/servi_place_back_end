@@ -46,7 +46,8 @@ const getFilteredReviews = async (idSpecialist: number) => {
         reviewId: job.review?.id,
         reviewContent: job.review?.content,
         reviewRating: job.review?.rating,
-        reviewClient: job.user1.name + " " + job.user1.last_name,
+        reviewClientName: job.user1.name,
+        reviewClientLastName: job.user1.last_name,
         reviewClientPicture: job.user1.profile_picture
       };
     }
