@@ -17,7 +17,7 @@ router.put('/finish-job/:id', finishJob);
 // Create a new review
 router.post('/create-review/:id', commentJob);
 // Create a new job
-router.post('/create-job', createJob);
+router.post('/create-job/:id', createJob);
 
 
 

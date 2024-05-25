@@ -10,7 +10,9 @@ import { jobSchema } from '../middlewares/validation/job.validation'
 export const createJob = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
 
-        const specialistUser = await findUser({ id: req.body.idSpecialist });
+        const idSpecealist = Number(req.params.id);
+
+        const specialistUser = await findUser({ id: idSpecealist });
 
         if (!specialistUser) {
             res.status(404).json({ error: 'Specialist not found' });
@@ -31,7 +33,7 @@ export const createJob = async (req: Request, res: Response, next: NextFunction)
             name: body.name,
             description: body.description,
             idCustomer: req.body.decoded.id,
-            idSpecialist: body.idSpecialist
+            idSpecialist: idSpecealist
         });
 
         res.status(201).json({ message: 'Job created', job: job });

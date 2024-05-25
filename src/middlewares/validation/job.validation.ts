@@ -3,12 +3,12 @@ import { z } from 'zod';
 
 const name_schema = z.string().min(4, { message: 'Name must be at least 4 characters long' });
 const description_schema = z.string().min(4, { message: 'Description must be at least 4 characters long' });
-const idSpecialist_schema = z.number().int()
+
 
 const jobBody = z.object({
   name: name_schema,
   description: description_schema,
-  idSpecialist: idSpecialist_schema
+
 });
 
 export const jobSchema = z.object({
