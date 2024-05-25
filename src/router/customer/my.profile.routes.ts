@@ -8,9 +8,9 @@ const router = Router();
 //actions that the client can perform from their profile 
 
 // get my profile information
-router.get('/myinformation', getMyInformation);
+router.get('/my-information', getMyInformation);
 // update my profile information
-router.patch('/myinformation', updateMyInformation);
+router.patch('/my-information', updateMyInformation);
 // get my created articles
 router.get('/articles', getAllArticles);
 

@@ -6,17 +6,15 @@ import router from './router/index'
 import errorHandler from './middlewares/error.handler'
 import { setupCors } from './middlewares/setup.cors';
 
-dotenv.config()
+dotenv.config();
 
-const app = express()
+const app = express();
 app.use(morgan('dev'))
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(setupCors)
-app.use(router)
-app.use(errorHandler)
+app.use(setupCors);
+app.use(router);
+app.use(errorHandler);
 
-export default app
-
-
+export default app;

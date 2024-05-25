@@ -8,9 +8,9 @@ async function getUserInformation(userId: number) {
   if (!user) {
     return { status: 404, data: { error: 'User not found' } };
   }
-  const { name, last_name, description, profile_picture } = user;
+  const { name, last_name, email, description, profile_picture } = user;
 
-  return { status: 200, data: { name, last_name, description, profile_picture } };
+  return { status: 200, data: { name, last_name, email, description, profile_picture } };
 }
 
 export const getProfileInformation = async (req: Request, res: Response, next: NextFunction) => {
