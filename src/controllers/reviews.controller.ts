@@ -116,6 +116,32 @@ export const getMyReviews = async (req: Request, res: Response, next: NextFuncti
 }
 
 
+// export const getSummaryreviewsByUser = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+//   try {
+//     const specialistId = Number(req.params.id);
+//     const user = await findUser({ id: specialistId });
+
+//     if (!user) {
+//       res.status(404).send('User not found');
+//       return;
+//     }
+//     if (user.role !== 'SPECIALIST') {
+//       res.status(400).send({ error: 'User is not a specialist' });
+//       return;
+//     }
+//     const summary = await summaryReviews(specialistId);
+
+//     const data = Object.entries(summary).map(([star, count]) => ({
+//       star: Number(star),
+//       count: count
+//     }));
+
+//     res.status(200).json(data);
+//   } catch (error) {
+//     next(error);
+//   }
+// }
+
 export const getSummaryreviewsByUser = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
     const specialistId = Number(req.params.id);
@@ -131,7 +157,15 @@ export const getSummaryreviewsByUser = async (req: Request, res: Response, next:
     }
     const summary = await summaryReviews(specialistId);
 
-    const data = Object.entries(summary).map(([star, count]) => ({
+    // Initialize all stars to 0
+    const allStars: { [key: number]: number } = { 5: 0, 4: 0, 3: 0, 2: 0, 1: 0 };
+
+    // Update the counts with the data from summary
+    for (const [star, count] of Object.entries(summary)) {
+      allStars[Number(star)] = count;
+    }
+
+    const data = Object.entries(allStars).map(([star, count]) => ({
       star: Number(star),
       count: count
     }));
