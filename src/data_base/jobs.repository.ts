@@ -67,11 +67,11 @@ export const getReviewsBySpecialist = async (idSpecialist: number) => {
             idSpecialist: idSpecialist
         },
         include: {
-            review: true
+            review: true,
+            user1: true
         }
     })
-
-    return jobs.map(job => job.review);
+    return jobs;
 }
 
 
