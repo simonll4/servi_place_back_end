@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from 'express'
 import { createReview, summaryReviews } from '../data_base/reviews.repository'
 import { reviewSchema } from '../middlewares/validation/reviews.validation'
 import { zParse } from '../services/zod.service'
-import { getJob, getReviewsBySpecialist } from '../data_base/jobs.repository'
+import { getJob, getReviewsBySpecialist, setStateJob } from '../data_base/jobs.repository'
 import { findUser } from '../data_base/users.repository'
 
 
@@ -27,8 +27,9 @@ export const commentJob = async (req: Request, res: Response, next: NextFunction
       res.status(400).json({ error: 'The job is not finished' });
       return;
     }
-
     const review = await createReview({ content: body.content, rating: body.rating, idCustomer: req.body.decoded.id, idJob: jobId })
+    setStateJob(jobId, 'COMMENTED')
+
     res.status(201).json({ message: 'Review created', review })
   } catch (error) {
     next(error)

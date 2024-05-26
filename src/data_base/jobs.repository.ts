@@ -2,6 +2,7 @@ import { JobState, type Jobs } from '@prisma/client'
 import prisma from './models/jobs'
 
 
+
 type jobCreateType = Pick<Jobs, 'name' | 'description' | 'idCustomer' | 'idSpecialist'>
 type idJobsType = { idCustomer?: number, idSpecialist?: number };
 type idCustomerIdSpecialistType = { idCustomer: number, idSpecialist: number }
@@ -84,4 +85,17 @@ export const getJobs = async (idSpecialist: number) => {
             id: true
         }
     });
+}
+
+
+export  const setStateJob = async (id:  number , state: JobState) => {
+    return await prisma.update({
+        where: {
+            id: id
+        },
+        data: {
+            state: state
+        }
+    })
+
 }

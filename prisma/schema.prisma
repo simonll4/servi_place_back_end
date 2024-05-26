@@ -116,6 +116,7 @@ enum JobState {
   ACCEPTED
   REJECTED
   FINISHED
+  COMMENTED
 }
 
 enum Role {
