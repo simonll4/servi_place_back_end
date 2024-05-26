@@ -8,9 +8,9 @@ async function getUserInformation(userId: number) {
   if (!user) {
     return { status: 404, data: { error: 'User not found' } };
   }
-  const { name, last_name, email, description, profile_picture } = user;
+  const { id, name, last_name, email, description, profile_picture } = user;
 
-  return { status: 200, data: { name, last_name, email, description, profile_picture } };
+  return { status: 200, data: { id, name, last_name, email, description, profile_picture } };
 }
 
 export const getProfileInformation = async (req: Request, res: Response, next: NextFunction) => {
@@ -66,7 +66,7 @@ export const updateMyInformation = async (req: Request, res: Response, next: Nex
 export const getAllSpecialist = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const specialists = await getSpecilists()
-    res.status(200).json({SPECIALIST: specialists });
+    res.status(200).json({ SPECIALIST: specialists });
   } catch (error) {
     next(error);
   }
