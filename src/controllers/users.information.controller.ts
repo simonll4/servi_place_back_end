@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from 'express'
-import { findUser, updateUserInformation } from '../data_base/users.repository';
+import { findUser, getSpecilists, updateUserInformation } from '../data_base/users.repository';
 
 
 async function getUserInformation(userId: number) {
@@ -58,6 +58,15 @@ export const updateMyInformation = async (req: Request, res: Response, next: Nex
     }
 
     res.status(200).json({ user: updatedUser });
+  } catch (error) {
+    next(error);
+  }
+}
+
+export const getAllSpecialist = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const specialists = await getSpecilists()
+    res.status(200).json({SPECIALIST: specialists });
   } catch (error) {
     next(error);
   }
