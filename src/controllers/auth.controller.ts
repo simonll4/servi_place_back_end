@@ -29,7 +29,7 @@ export const register = async (req: Request, res: Response, next: NextFunction):
         const token = generateToken(user)
         res.status(201)
             .header('Authorization', 'Bearer ' + token)
-            .json({ message: 'Register success', role: user.role });
+            .json({ message: 'Register success', role: user.role, id: user.id, });
     } catch (error) {
         next(error)
     }
@@ -50,7 +50,7 @@ export const login = async (req: Request, res: Response, next: NextFunction): Pr
         const token = generateToken(user)
         res.status(200)
             .header('Authorization', 'Bearer ' + token)
-            .json({ message: 'Login success', role: user.role, token: token });
+            .json({ message: 'Login success', role: user.role, id: user.id });
     } catch (error) {
         next(error)
     }

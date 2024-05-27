@@ -2,7 +2,7 @@ import { Router } from "express";
 
 import { getAllArticles, getMyLastArticle } from "../../controllers/articles.controller";
 import { getMyInformation, updateMyInformation } from "../../controllers/users.information.controller";
-import { getMyReviews } from "../../controllers/reviews.controller";
+import { getMyReviews, getSummaryreviewsByUser } from "../../controllers/reviews.controller";
 
 
 const router = Router();
@@ -19,6 +19,8 @@ router.get('/articles', getAllArticles);
 router.get('/my-reviews', getMyReviews);
 // get last article for profile preview
 router.get('/last-article', getMyLastArticle);
+// get summary reviews from a user
+router.get('/summary-reviews/:id', getSummaryreviewsByUser);
 
 
 export default router;
