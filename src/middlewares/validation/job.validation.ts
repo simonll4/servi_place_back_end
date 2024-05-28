@@ -1,8 +1,15 @@
 import { z } from 'zod';
 
+const MAX_NAME_LENGTH = 12;
+const MIN_NAME_LENGTH = 4;
+const MAX_DESCRIPTION_LENGTH = 125;
+const MIN_DESCRIPTION_LENGTH = 4;
 
-const name_schema = z.string().min(4, { message: 'Name must be at least 4 characters long' });
-const description_schema = z.string().min(4, { message: 'Description must be at least 4 characters long' });
+const name_schema = z.string().min(MIN_NAME_LENGTH, { message: `Name must be at least ${MIN_NAME_LENGTH} characters long` })
+  .max(20, { message: `Name must be at most ${MAX_NAME_LENGTH} characters long` });
+
+const description_schema = z.string().min(MIN_DESCRIPTION_LENGTH, { message: `Description must be at least ${MIN_DESCRIPTION_LENGTH} characters long` })
+  .max(MAX_DESCRIPTION_LENGTH, { message: `Description must be at most ${MAX_DESCRIPTION_LENGTH} characters long` });
 
 
 const jobBody = z.object({
@@ -15,17 +22,3 @@ export const jobSchema = z.object({
   body: jobBody
 });
 
-// model Jobs {
-//   id           Int      @id @default(autoincrement())
-//   name         String
-//   description  String
-//   state        JobState
-//   idCustomer   Int
-//   idSpecialist Int
-//   idReview     Int
-//   user1        Users    @relation(fields: [idCustomer], references: [id], name: "customerJobs")
-//   user2        Users    @relation(fields: [idSpecialist], references: [id], name: "specialistJobs")
-//   review       Reviews?
-//   createdAt  DateTime   @default(now())
-//   updatedAt  DateTime   @updatedAt
-// }

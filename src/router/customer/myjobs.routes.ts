@@ -15,7 +15,7 @@ router.put('/reject-job/:id', rejectJob);
 // Change the status of a work from accepted to finished
 router.put('/finish-job/:id', finishJob);
 // Create a new review
-router.post('/create-review/:id', commentJob);
+router.post('/create-review', commentJob);
 // Create a new job
 router.post('/create-job/:id', createJob);
 

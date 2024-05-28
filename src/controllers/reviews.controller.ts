@@ -8,12 +8,11 @@ import { findUser } from '../data_base/users.repository'
 
 export const commentJob = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   const user = req.body.decoded;
-  const jobId = Number(req.params.id);
 
 
   try {
     const { body } = await zParse(reviewSchema, req);
-    const job = await getJob(jobId);
+    const job = await getJob(body.jobId);
 
     if (!job) {
       res.status(404).json({ error: 'Job not found' });
@@ -27,8 +26,8 @@ export const commentJob = async (req: Request, res: Response, next: NextFunction
       res.status(400).json({ error: 'The job is not finished' });
       return;
     }
-    const review = await createReview({ content: body.content, rating: body.rating, idCustomer: req.body.decoded.id, idJob: jobId })
-    setStateJob(jobId, 'COMMENTED')
+    const review = await createReview({ content: body.content, rating: body.rating, idCustomer: req.body.decoded.id, idJob: body.jobId })
+    setStateJob(body.jobId, 'COMMENTED')
 
     res.status(201).json({ message: 'Review created', review })
   } catch (error) {
@@ -145,7 +144,15 @@ export const getMyReviews = async (req: Request, res: Response, next: NextFuncti
 
 export const getSummaryreviewsByUser = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
-    const specialistId = Number(req.params.id);
+    let specialistId;
+    if (req.body.decoded.role === 'SPECIALIST') {
+      specialistId = req.body.decoded.id;
+    }
+    if (req.body.decoded.role === 'CUSTOMER') {
+      specialistId = Number(req.params.id);
+    }
+
+
     const user = await findUser({ id: specialistId });
 
     if (!user) {

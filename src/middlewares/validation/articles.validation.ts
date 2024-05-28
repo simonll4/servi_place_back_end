@@ -1,9 +1,18 @@
 import { z } from 'zod';
 
+const MAX_TITLE_LENGTH = 20;
+const MIN_TITLE_LENGTH = 4;
+const MAX_PARAGRAPH_LENGTH = 125;
+const MIN_PARAGRAPH_LENGTH = 4;
 
-const title_schema = z.string().min(4, { message: 'Title must be at least 4 characters long' });
-const paragraph_schema = z.string().min(4, { message: 'Paragraph must be at least 4 characters long' });
+const title_schema = z.string().min(MIN_TITLE_LENGTH, { message: `Title must be at least ${MIN_TITLE_LENGTH} characters long` })
+  .max(MAX_TITLE_LENGTH, { message: `Title must be at most ${MAX_TITLE_LENGTH} characters long` });
+
+const paragraph_schema = z.string().min(MIN_PARAGRAPH_LENGTH, { message: `Paragraph must be at least ${MIN_PARAGRAPH_LENGTH} characters long` })
+  .max(MAX_PARAGRAPH_LENGTH, { message: `Paragraph must be at most ${MAX_PARAGRAPH_LENGTH} characters long` });
+
 const image_schema = z.string().url({ message: 'Invalid url format' });
+
 const categoryId_schema = z.number().int();
 
 

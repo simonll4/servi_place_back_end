@@ -23,5 +23,4 @@ router.use('/customer', authenticateTokenCustomer, customerRoutes);
 router.use('/categories',categoriesRoutes);
 
 
-
 export default router;

@@ -1,7 +1,7 @@
 import { Router } from "express";
 
 import { getAllArticles, getMyLastArticle } from "../../controllers/articles.controller";
-import { getMyInformation, updateMyInformation } from "../../controllers/users.information.controller";
+import { getMyInformation, updateMyInformation} from "../../controllers/users.information.controller";
 import { getMyReviews, getSummaryreviewsByUser } from "../../controllers/reviews.controller";
 
 
@@ -20,7 +20,9 @@ router.get('/my-reviews', getMyReviews);
 // get last article for profile preview
 router.get('/last-article', getMyLastArticle);
 // get summary reviews from a user
-router.get('/summary-reviews/:id', getSummaryreviewsByUser);
+router.get('/summary-reviews', getSummaryreviewsByUser);
+//
+//router.patch('/my-categories', updateUserCategories);
 
 
 export default router;

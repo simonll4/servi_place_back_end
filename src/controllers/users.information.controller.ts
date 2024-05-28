@@ -3,6 +3,7 @@ import { findUser, getSpecilists, updateUserInformation } from '../data_base/use
 
 
 async function getUserInformation(userId: number) {
+  
   const user = await findUser({ id: userId });
 
   if (!user) {
@@ -71,3 +72,4 @@ export const getAllSpecialist = async (req: Request, res: Response, next: NextFu
     next(error);
   }
 }
+
