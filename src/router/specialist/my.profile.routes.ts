@@ -1,8 +1,9 @@
 import { Router } from "express";
 
 import { getAllArticles, getMyLastArticle } from "../../controllers/articles.controller";
-import { getMyInformation, updateMyInformation} from "../../controllers/users.information.controller";
+import { getMyInformation, updateMyInformation } from "../../controllers/users.information.controller";
 import { getMyReviews, getSummaryreviewsByUser } from "../../controllers/reviews.controller";
+import { asignCategory, deleteMyCategory, getAllSpecialistCategories } from "../../controllers/user.category.controller";
 
 
 const router = Router();
@@ -21,8 +22,15 @@ router.get('/my-reviews', getMyReviews);
 router.get('/last-article', getMyLastArticle);
 // get summary reviews from a user
 router.get('/summary-reviews', getSummaryreviewsByUser);
-//
-//router.patch('/my-categories', updateUserCategories);
+
+//set category to specialist
+router.put('/category/:id', asignCategory);
+//delete category from specialist
+router.delete('/category/:id', deleteMyCategory)
+// get category from specialist
+//router.get('/category', getMyCategories);
+// get all categories from specialist
+router.get('/categories', getAllSpecialistCategories)
 
 
 export default router;

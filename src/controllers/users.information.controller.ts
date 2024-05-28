@@ -35,9 +35,8 @@ export const getProfileInformation = async (req: Request, res: Response, next: N
 
 export const getMyInformation = async (req: Request, res: Response, next: NextFunction) => {
 
-  const userId = req.body.decoded.id;
-
   try {
+    const userId = req.body.decoded.id;
     const result = await getUserInformation(userId);
     res.status(result.status).json(result.data);
   } catch (error) {
