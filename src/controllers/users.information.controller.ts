@@ -1,9 +1,9 @@
 import { NextFunction, Request, Response } from 'express'
-import { findUser, getSpecilists, updateUserInformation } from '../data_base/users.repository';
+import { findUser, getAllSpecialist , getSpecialistsByCategory, updateUserInformation } from '../data_base/users.repository';
 
 
 async function getUserInformation(userId: number) {
-  
+
   const user = await findUser({ id: userId });
 
   if (!user) {
@@ -63,12 +63,47 @@ export const updateMyInformation = async (req: Request, res: Response, next: Nex
   }
 }
 
-export const getAllSpecialist = async (req: Request, res: Response, next: NextFunction) => {
+// export const getAllSpecialist = async (req: Request, res: Response, next: NextFunction) => {
+//   try {
+//     const specialists = await getSpecilists()
+//     res.status(200).json({ SPECIALIST: specialists });
+//   } catch (error) {
+//     next(error);
+//   }
+// }
+
+
+
+export const getSpecialists = async (req: Request, res: Response, next: NextFunction) => {
+
+  const params = req.query;
+
+  if (Object.keys(params).length === 0 || !params.categories) {
+    try {
+      const specialists = await getAllSpecialist();
+      res.status(200).json({ message: 'Specialists by categories', specialists });
+    } catch (error) {
+      next(error);
+    }
+    return;
+  }
+
+  const categories = String(params.categories).split(',');
+  if (categories.length > 5) {
+    res.status(400).json({ error: 'Parameter limit exceeded, only 5 categories are allowed.' });
+    return
+  }
+
   try {
-    const specialists = await getSpecilists()
-    res.status(200).json({ SPECIALIST: specialists });
+    const specialistsPromises = categories.map(async category => {
+      const specialists = await getSpecialistsByCategory(Number(category) );
+      return (specialists && Object.keys(specialists).length > 0) ? specialists : null;
+    });
+    const specialistsArrays = (await Promise.all(specialistsPromises)).filter(specialist => specialist !== null);
+    const flatSpecialistsArray = specialistsArrays.flat();
+    const specialists = Array.from(new Set(flatSpecialistsArray.map(s => JSON.stringify(s)))).map(s => JSON.parse(s));
+    res.status(200).json({ message: 'Specialists', specialists });
   } catch (error) {
     next(error);
   }
 }
-

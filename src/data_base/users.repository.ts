@@ -44,7 +44,7 @@ export const updateUserInformation = async (userId: number, updates: { name?: st
 }
 
 
-export const getSpecilists = async () => {
+export const getAllSpecialist = async () => {
     return await prisma.findMany({
         where: {
             role: 'SPECIALIST'
@@ -55,6 +55,29 @@ export const getSpecilists = async () => {
           last_name: true,
           description: true,
           profile_picture: true
+        },
+        orderBy: {
+            createdAt: 'desc'
+        }
+    });
+}
+
+export const getSpecialistsByCategory = async (categoryId: number) => {
+    return await prisma.findMany({
+        where: {
+            role: 'SPECIALIST',
+            categories: {
+                some: {
+                    categoryId: categoryId
+                }
+            }
+        },
+        select: {
+            id: true,
+            name: true,
+            last_name: true,
+            description: true,
+            profile_picture: true
         },
         orderBy: {
             createdAt: 'desc'
