@@ -10,6 +10,8 @@ export const authenticateTokenSpecialist = (req: Request, res: Response, next: N
     const authHeader = req.headers['authorization'];
     const token = authHeader && authHeader.split(' ')[1];
 
+   
+
     if (token == null) return res.status(401).json({ error: 'not authorized' });
 
     Jwt.verify(token, JWT_SECRET, async (err, decoded) => {
@@ -30,6 +32,8 @@ export const authenticateTokenCustomer = (req: Request, res: Response, next: Nex
     const authHeader = req.headers['authorization'];
     const token = authHeader && authHeader.split(' ')[1];
 
+ 
+
     if (token == null) return res.status(401).json({ error: 'not authorized' });
 
     Jwt.verify(token, JWT_SECRET, async (err, decoded) => {
@@ -43,6 +47,27 @@ export const authenticateTokenCustomer = (req: Request, res: Response, next: Nex
         if (req.body.decoded.role !== Role.CUSTOMER) return res.status(403).json({ error: 'you do not have access to this resource' })
         next();
     })
+};
+
+
+export const authenticateTokenSocket = async (token: string): Promise<number> => {
+    return new Promise((resolve, reject) => {
+        Jwt.verify(token, JWT_SECRET, (err, decoded) => {
+            if (err) {
+                if (err.name === 'TokenExpiredError') {
+                    reject('Token has expired');
+                } else {
+                    reject('Token is not valid');
+                }
+            } else {
+                if (typeof decoded === 'object' && 'id' in decoded) {
+                    resolve(decoded.id);
+                } else {
+                    reject('Token does not contain an id');
+                }
+            }
+        });
+    });
 };
 
 

@@ -1,4 +1,7 @@
 import express from 'express'
+import { createServer } from "http";
+import { Server } from "socket.io";
+import { sockerServer } from './sockets';
 import dotenv from 'dotenv'
 import morgan from 'morgan'
 
@@ -9,12 +12,26 @@ import { setupCors } from './middlewares/setup.cors';
 dotenv.config();
 
 const app = express();
-app.use(morgan('dev'))
+const httpServer = createServer(app);
 
+const io = new Server(httpServer, {
+  connectionStateRecovery: { maxDisconnectionDuration: 120000 },
+  cors: {
+    origin: "*",
+    methods: ["GET", "POST"],
+    allowedHeaders: ["my-custom-header"],
+    credentials: true
+  }
+});
+
+app.use(morgan('dev'))
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(setupCors);
 app.use(router);
 app.use(errorHandler);
 
-export default app;
+//socket events
+sockerServer(io);
+
+export default httpServer;
