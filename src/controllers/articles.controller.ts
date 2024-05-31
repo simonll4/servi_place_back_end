@@ -66,6 +66,7 @@ export const getLastUserArticle = async (req: Request, res: Response, next: Next
 
 export const postArticle = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
+        console.log(req.body)
         const { body } = await zParse(articleSchema, req)
 
         const article = await createArticle({

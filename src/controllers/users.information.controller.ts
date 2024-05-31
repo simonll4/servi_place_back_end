@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from 'express'
-import { findUser, getAllSpecialist , getSpecialistsByCategory, updateUserInformation } from '../data_base/users.repository';
+import { findUser, getAllSpecialist, getSpecialistsByCategory, updateUserInformation } from '../data_base/users.repository';
 
 
 async function getUserInformation(userId: number) {
@@ -96,7 +96,7 @@ export const getSpecialists = async (req: Request, res: Response, next: NextFunc
 
   try {
     const specialistsPromises = categories.map(async category => {
-      const specialists = await getSpecialistsByCategory(Number(category) );
+      const specialists = await getSpecialistsByCategory(Number(category));
       return (specialists && Object.keys(specialists).length > 0) ? specialists : null;
     });
     const specialistsArrays = (await Promise.all(specialistsPromises)).filter(specialist => specialist !== null);
