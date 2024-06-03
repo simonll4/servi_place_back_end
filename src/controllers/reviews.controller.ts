@@ -176,7 +176,8 @@ export const getSummaryreviewsByUser = async (req: Request, res: Response, next:
     const data = Object.entries(allStars).map(([star, count]) => ({
       star: Number(star),
       count: count
-    }));
+    }))
+      .sort((a, b) => b.star - a.star);
 
     res.status(200).json(data);
   } catch (error) {

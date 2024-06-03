@@ -1,8 +1,8 @@
 import { z } from 'zod';
 
-const MAX_TITLE_LENGTH = 20;
+const MAX_TITLE_LENGTH = 50;
 const MIN_TITLE_LENGTH = 4;
-const MAX_PARAGRAPH_LENGTH = 125;
+const MAX_PARAGRAPH_LENGTH = 500;
 const MIN_PARAGRAPH_LENGTH = 4;
 
 const title_schema = z.string().min(MIN_TITLE_LENGTH, { message: `Title must be at least ${MIN_TITLE_LENGTH} characters long` })
