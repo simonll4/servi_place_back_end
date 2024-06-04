@@ -4,7 +4,7 @@ import { Role } from "@prisma/client";
 
 
 const MAX_EMAIL_LENGTH = 60;
-const MAX_PASSWORD_LENGTH = 20;
+const MAX_PASSWORD_LENGTH = 30;
 const MIN_PASSWORD_LENGTH = 8;
 const MAX_NAME_LENGTH = 12;
 const MIN_NAME_LENGTH = 4;

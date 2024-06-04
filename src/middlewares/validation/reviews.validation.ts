@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-const MAX_CONTENT_LENGTH = 125;
+const MAX_CONTENT_LENGTH = 500;
 const MIN_CONTENT_LENGTH = 4;
 const MAX_RATING = 5;
 const MIN_RATING = 1;
